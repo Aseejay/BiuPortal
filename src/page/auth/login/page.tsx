@@ -2,12 +2,22 @@
 
 import { ArrowRight, LockKeyhole, User2 } from "lucide-react";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+import { useEffect } from "react";
 
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <div className="flex min-h-screen bg-[#F5F5F5] px-5 py-6">
       <div className="mx-auto flex w-full max-w-md flex-col justify-between">
@@ -79,7 +89,10 @@ const LoginPage = () => {
                 </button>
               </div>
 
-              <Button className="mt-2 h-14 rounded-full bg-[#111111] hover:bg-[#111111]">
+              <Button
+                onClick={() => navigate("/dashboard")}
+                className="mt-2 h-14 rounded-full bg-[#111111] hover:bg-[#111111]"
+              >
                 <div className="flex items-center gap-2 text-[15px] font-medium">
                   Login
                   <ArrowRight size={18} />

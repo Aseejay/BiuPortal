@@ -1,6 +1,6 @@
 // src/pages/CreateAccountPage.tsx
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   ArrowLeft,
@@ -8,11 +8,12 @@ import {
   BedDouble,
   Building2,
   ChevronDown,
+  DoorOpen,
   LockKeyhole,
   User2,
 } from "lucide-react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
@@ -29,6 +30,15 @@ const CreateAccountPage = () => {
   const [step, setStep] = useState(1);
 
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [location.pathname, step]);
 
   const student = {
     fullName: "Samuel Asije",
@@ -169,6 +179,24 @@ const CreateAccountPage = () => {
 
                       <Input
                         placeholder="Enter room number"
+                        className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="mb-3 text-sm font-medium text-gray-700">
+                      Door Number
+                    </p>
+
+                    <div className="relative">
+                      <DoorOpen
+                        size={18}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                      />
+
+                      <Input
+                        placeholder="Enter door number"
                         className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
                       />
                     </div>
