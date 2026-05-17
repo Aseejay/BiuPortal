@@ -27,53 +27,55 @@ const activities = [
 
 const RecentActivity = () => {
   return (
-    <div className="rounded-[34px] bg-white p-5">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="rounded-[30px] bg-white p-4">
+      <div className="mb-5 flex items-center justify-between">
         <div>
-          <h2 className="text-[26px] font-semibold text-gray-900">
+          <h2 className="text-[20px] font-semibold text-gray-900">
             Recent Activity
           </h2>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-xs text-gray-500">
             Latest hostel key actions
           </p>
         </div>
 
-        <button className="rounded-full bg-[#F5F5F5] px-4 py-2 text-sm font-medium text-gray-700">
+        <button className="rounded-full bg-[#F5F5F5] px-3 py-2 text-xs font-medium text-gray-700">
           View all
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {activities.map((activity, index) => {
           const Icon = activity.icon;
 
           return (
-            <div key={index} className="rounded-[28px] bg-[#F8F8F8] p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex gap-4">
+            <div key={index} className="rounded-[24px] bg-[#F8F8F8] p-3.5">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex gap-3">
                   <div
-                    className={`flex h-14 w-14 items-center justify-center rounded-2xl ${activity.iconBg}`}
+                    className={`flex h-12 w-12 items-center justify-center rounded-2xl ${activity.iconBg}`}
                   >
-                    <Icon size={24} className={activity.iconColor} />
+                    <Icon size={20} className={activity.iconColor} />
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-[15px] font-semibold text-gray-900">
                       {activity.type}
                     </h3>
 
-                    <div className="mt-2 flex items-center gap-2">
-                      <Clock3 size={14} className="text-gray-400" />
+                    <div className="mt-1.5 flex items-center gap-1.5">
+                      <Clock3 size={12} className="text-gray-400" />
 
-                      <p className="text-sm text-gray-500">{activity.time}</p>
+                      <p className="text-xs text-gray-500">{activity.time}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className={`rounded-full px-3 py-1 ${activity.statusBg}`}>
+                <div
+                  className={`rounded-full px-2.5 py-1 ${activity.statusBg}`}
+                >
                   <span
-                    className={`text-xs font-semibold ${activity.statusColor}`}
+                    className={`text-[10px] font-semibold ${activity.statusColor}`}
                   >
                     {activity.status}
                   </span>
