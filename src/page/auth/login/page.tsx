@@ -22,7 +22,7 @@ const LoginPage = () => {
     <div className="flex min-h-screen bg-[#F5F5F5] px-5 py-6">
       <div className="mx-auto flex w-full max-w-md flex-col justify-between">
         <div>
-          <div className="mb-12 flex items-center justify-between">
+          <div className="mb-10 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-400">Welcome back</p>
 
@@ -33,6 +33,28 @@ const LoginPage = () => {
 
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white">
               <User2 size={24} className="text-gray-700" />
+            </div>
+          </div>
+
+          <div className="mb-5 rounded-[24px] border border-[#E5E7EB] bg-white p-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">
+                  New Student?
+                </p>
+
+                <p className="mt-1 text-xs leading-5 text-gray-500">
+                  Create an account to start using the hostel key management
+                  system.
+                </p>
+              </div>
+
+              <Link
+                to="/create-account"
+                className="whitespace-nowrap rounded-full bg-[#111111] px-4 py-3 text-xs font-semibold text-white"
+              >
+                Create Account
+              </Link>
             </div>
           </div>
 
@@ -102,11 +124,8 @@ const LoginPage = () => {
           </div>
         </div>
 
-        <div className="mt-8 text-center text-sm text-gray-500">
-          Don&apos;t have an account?{" "}
-          <Link to="/create-account" className="font-semibold text-gray-900">
-            Create account
-          </Link>
+        <div className="mt-8 text-center text-xs text-gray-400">
+          BIU Smart Hostel Key Management System
         </div>
       </div>
     </div>
