@@ -1,13 +1,27 @@
 // src/pages/dashboard/page.tsx
 
-import { Bell, Home, QrCode, Settings, Search } from "lucide-react";
+import { useEffect } from "react";
+
+import { Bell, Home, QrCode, Search, Settings } from "lucide-react";
+
+import { useLocation, useNavigate } from "react-router-dom";
 
 import ProfileCard from "../../components/dashboard/ProfileCard";
 import KeyStatusCard from "../../components/dashboard/KeyCardStatus";
-import ScanButton from "../../components/dashboard/ScanLineButton";
 import RecentActivity from "../../components/dashboard/RecentActivity";
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-32">
       <div className="mx-auto max-w-md px-5 pt-6">
@@ -34,15 +48,15 @@ const DashboardPage = () => {
         </div>
 
         <div className="mb-5 flex items-center gap-3 overflow-x-auto no-scrollbar">
-          <button className="rounded-full bg-[#111111] px-5 py-3 text-sm font-medium text-white whitespace-nowrap">
+          <button className="whitespace-nowrap rounded-full bg-[#111111] px-5 py-3 text-sm font-medium text-white">
             Overview
           </button>
 
-          <button className="rounded-full bg-white px-5 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+          <button className="whitespace-nowrap rounded-full bg-white px-5 py-3 text-sm font-medium text-gray-600">
             Key Status
           </button>
 
-          <button className="rounded-full bg-white px-5 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+          <button className="whitespace-nowrap rounded-full bg-white px-5 py-3 text-sm font-medium text-gray-600">
             Activity
           </button>
         </div>
@@ -58,15 +72,24 @@ const DashboardPage = () => {
 
       <div className="fixed bottom-6 left-1/2 z-50 w-[90%] max-w-sm -translate-x-1/2">
         <div className="flex items-center justify-between rounded-full bg-[#111111] px-6 py-4">
-          <button className="flex h-11 w-11 items-center justify-center rounded-full text-white">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black"
+          >
             <Home size={22} />
           </button>
 
-          <button className="flex h-11 w-11 items-center justify-center rounded-full text-[#8E8E93]">
+          <button
+            onClick={() => navigate("/scan")}
+            className="flex h-11 w-11 items-center justify-center rounded-full text-[#8E8E93]"
+          >
             <QrCode size={22} />
           </button>
 
-          <button className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-black">
+          <button
+            onClick={() => navigate("/settings")}
+            className="flex h-11 w-11 items-center justify-center rounded-full text-[#8E8E93]"
+          >
             <Settings size={22} />
           </button>
         </div>
