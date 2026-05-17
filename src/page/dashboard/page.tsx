@@ -1,6 +1,6 @@
 // src/pages/dashboard/page.tsx
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Bell, Home, QrCode, Search, Settings } from "lucide-react";
 
@@ -15,12 +15,14 @@ const DashboardPage = () => {
 
   const location = useLocation();
 
+  const [activeTab, setActiveTab] = useState("overview");
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-  }, [location.pathname]);
+  }, [location.pathname, activeTab]);
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] pb-32">
@@ -48,25 +50,54 @@ const DashboardPage = () => {
         </div>
 
         <div className="mb-5 flex items-center gap-3 overflow-x-auto no-scrollbar">
-          <button className="whitespace-nowrap rounded-full bg-[#111111] px-5 py-3 text-sm font-medium text-white">
+          <button
+            onClick={() => setActiveTab("overview")}
+            className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition ${
+              activeTab === "overview"
+                ? "bg-[#111111] text-white"
+                : "bg-white text-gray-600"
+            }`}
+          >
             Overview
           </button>
 
-          <button className="whitespace-nowrap rounded-full bg-white px-5 py-3 text-sm font-medium text-gray-600">
+          <button
+            onClick={() => setActiveTab("key-status")}
+            className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition ${
+              activeTab === "key-status"
+                ? "bg-[#111111] text-white"
+                : "bg-white text-gray-600"
+            }`}
+          >
             Key Status
           </button>
 
-          <button className="whitespace-nowrap rounded-full bg-white px-5 py-3 text-sm font-medium text-gray-600">
+          <button
+            onClick={() => setActiveTab("activity")}
+            className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition ${
+              activeTab === "activity"
+                ? "bg-[#111111] text-white"
+                : "bg-white text-gray-600"
+            }`}
+          >
             Activity
           </button>
         </div>
 
         <div className="space-y-5">
-          <ProfileCard />
+          {activeTab === "overview" && (
+            <>
+              <ProfileCard />
 
-          <KeyStatusCard />
+              <KeyStatusCard />
 
-          <RecentActivity />
+              <RecentActivity />
+            </>
+          )}
+
+          {activeTab === "key-status" && <KeyStatusCard />}
+
+          {activeTab === "activity" && <RecentActivity />}
         </div>
       </div>
 
