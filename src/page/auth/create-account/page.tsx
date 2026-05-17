@@ -222,7 +222,7 @@ const CreateAccountPage = () => {
                   </div>
 
                   <Button
-                    onClick={() => navigate("/dashboard")}
+                    onClick={() => navigate("/verify-otp")}
                     className="h-14 rounded-full bg-[#111111] hover:bg-[#111111]"
                   >
                     <div className="flex items-center gap-2 text-[15px] font-medium">
