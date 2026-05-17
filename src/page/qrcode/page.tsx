@@ -2,9 +2,9 @@
 
 import { useEffect } from "react";
 
-import { ArrowLeft, Flashlight, ScanLine } from "lucide-react";
+import { ArrowLeft, ScanLine, ShieldCheck } from "lucide-react";
 
-import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -21,109 +21,128 @@ const ScanPage = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      {
-        fps: 10,
-        qrbox: {
-          width: 250,
-          height: 250,
-        },
-        supportedScanTypes: [0],
-        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
-      },
-      false,
-    );
+    const html5QrCode = new Html5Qrcode("reader");
 
-    scanner.render(
-      (decodedText) => {
-        console.log("QR Result:", decodedText);
+    const startScanner = async () => {
+      try {
+        const devices = await Html5Qrcode.getCameras();
 
-        alert(`QR Scanned: ${decodedText}`);
-      },
-      (error) => {
+        if (!devices || devices.length === 0) {
+          return;
+        }
+
+        const backCamera =
+          devices.find((device) =>
+            device.label.toLowerCase().includes("back"),
+          ) || devices[0];
+
+        await html5QrCode.start(
+          backCamera.id,
+          {
+            fps: 10,
+            qrbox: {
+              width: 260,
+              height: 260,
+            },
+          },
+          (decodedText) => {
+            console.log(decodedText);
+
+            alert(`QR Scanned Successfully: ${decodedText}`);
+          },
+          () => {},
+        );
+      } catch (error) {
         console.log(error);
-      },
-    );
+      }
+    };
+
+    startScanner();
 
     return () => {
-      scanner.clear().catch(() => {});
+      html5QrCode.stop().catch(() => {});
     };
   }, []);
 
   return (
     <div className="min-h-screen bg-[#F5F5F5] px-5 py-6">
       <div className="mx-auto max-w-md">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex items-center">
           <button
             onClick={() => navigate(-1)}
             className="flex h-12 w-12 items-center justify-center rounded-full bg-white"
           >
             <ArrowLeft size={20} className="text-gray-700" />
           </button>
-
-          <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
-            <Flashlight size={20} className="text-gray-700" />
-          </button>
         </div>
 
         <div className="mb-8">
-          <p className="text-sm font-medium text-gray-400">QR Scanner</p>
+          <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2">
+            <ShieldCheck size={15} className="text-[#16A34A]" />
 
-          <h1 className="mt-2 text-[34px] font-semibold leading-none tracking-tight text-gray-900">
+            <span className="text-xs font-semibold text-gray-700">
+              Secure QR Verification
+            </span>
+          </div>
+
+          <h1 className="mt-5 text-[32px] font-semibold leading-none tracking-tight text-gray-900">
             Scan QR Code
           </h1>
 
-          <p className="mt-3 text-sm leading-6 text-gray-500">
-            Scan the porter QR code to drop or collect your hostel key.
+          <p className="mt-3 text-[13px] leading-6 text-gray-500">
+            Scan the porter QR code to securely drop or collect your hostel key.
           </p>
         </div>
 
-        <div className="rounded-[36px] bg-white p-5">
+        <div className="rounded-[34px] bg-white p-4">
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F5F5F5]">
-              <ScanLine size={22} className="text-gray-700" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#F5F5F5]">
+              <ScanLine size={20} className="text-gray-700" />
             </div>
 
             <div>
-              <h2 className="text-[18px] font-semibold text-gray-900">
-                Camera Scanner
+              <h2 className="text-[16px] font-semibold text-gray-900">
+                QR Scanner
               </h2>
 
               <p className="mt-1 text-xs text-gray-500">
-                Position QR code inside the frame
+                Align QR code within frame
               </p>
             </div>
           </div>
 
-          <div id="reader" className="overflow-hidden rounded-[28px]" />
+          <div className="overflow-hidden rounded-[28px] bg-[#F8F8F8] p-3">
+            <div id="reader" className="overflow-hidden rounded-[24px]" />
+          </div>
         </div>
 
-        <div className="mt-5 rounded-[28px] bg-white p-4">
-          <p className="text-sm font-semibold text-gray-900">Instructions</p>
+        <div className="mt-5 rounded-[30px] bg-white p-4">
+          <h3 className="text-[15px] font-semibold text-gray-900">
+            Before scanning
+          </h3>
 
-          <div className="mt-3 space-y-3">
-            <div className="flex gap-3">
-              <div className="mt-1 h-2 w-2 rounded-full bg-[#8B5CF6]" />
+          <div className="mt-4 space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="mt-1.5 h-2 w-2 rounded-full bg-[#8B5CF6]" />
 
               <p className="text-xs leading-6 text-gray-500">
-                Ensure you are at the porter&apos;s lodge before scanning.
+                Ensure you are physically at the porter&apos;s lodge.
               </p>
             </div>
 
-            <div className="flex gap-3">
-              <div className="mt-1 h-2 w-2 rounded-full bg-[#8B5CF6]" />
+            <div className="flex items-start gap-3">
+              <div className="mt-1.5 h-2 w-2 rounded-full bg-[#8B5CF6]" />
 
               <p className="text-xs leading-6 text-gray-500">
-                Hold your phone steady while scanning the QR code.
+                Use only the official QR code provided by the porter.
               </p>
             </div>
 
-            <div className="flex gap-3">
-              <div className="mt-1 h-2 w-2 rounded-full bg-[#8B5CF6]" />
+            <div className="flex items-start gap-3">
+              <div className="mt-1.5 h-2 w-2 rounded-full bg-[#8B5CF6]" />
 
               <p className="text-xs leading-6 text-gray-500">
-                Wait for confirmation after a successful scan.
+                Hold your phone steady for faster scanning.
               </p>
             </div>
           </div>
