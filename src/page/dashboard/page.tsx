@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { Bell, Home, QrCode, Search, Settings } from "lucide-react";
+import { Home, Moon, QrCode, Settings, Sun } from "lucide-react";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -17,6 +17,8 @@ const DashboardPage = () => {
 
   const [activeTab, setActiveTab] = useState("overview");
 
+  const [darkMode, setDarkMode] = useState(false);
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -25,28 +27,43 @@ const DashboardPage = () => {
   }, [location.pathname, activeTab]);
 
   return (
-    <div className="min-h-screen bg-[#F5F5F5] pb-32">
+    <div
+      className={`min-h-screen pb-32 transition ${
+        darkMode ? "bg-[#111111]" : "bg-[#F5F5F5]"
+      }`}
+    >
       <div className="mx-auto max-w-md px-5 pt-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-[34px] font-semibold tracking-tight text-gray-900">
+            <h1
+              className={`text-[34px] font-semibold tracking-tight ${
+                darkMode ? "text-white" : "text-gray-900"
+              }`}
+            >
               Dashboard
             </h1>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p
+              className={`mt-1 text-sm ${
+                darkMode ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
               Manage your hostel key activity
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
-              <Search size={20} className="text-gray-700" />
-            </button>
-
-            <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
-              <Bell size={20} className="text-gray-700" />
-            </button>
-          </div>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className={`flex h-12 w-12 items-center justify-center rounded-full transition ${
+              darkMode ? "bg-[#1C1C1E]" : "bg-white"
+            }`}
+          >
+            {darkMode ? (
+              <Sun size={20} className="text-yellow-400" />
+            ) : (
+              <Moon size={20} className="text-gray-700" />
+            )}
+          </button>
         </div>
 
         <div className="mb-5 flex items-center gap-3 overflow-x-auto no-scrollbar">
@@ -55,7 +72,9 @@ const DashboardPage = () => {
             className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition ${
               activeTab === "overview"
                 ? "bg-[#111111] text-white"
-                : "bg-white text-gray-600"
+                : darkMode
+                  ? "bg-[#1C1C1E] text-gray-300"
+                  : "bg-white text-gray-600"
             }`}
           >
             Overview
@@ -66,7 +85,9 @@ const DashboardPage = () => {
             className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition ${
               activeTab === "key-status"
                 ? "bg-[#111111] text-white"
-                : "bg-white text-gray-600"
+                : darkMode
+                  ? "bg-[#1C1C1E] text-gray-300"
+                  : "bg-white text-gray-600"
             }`}
           >
             Key Status
@@ -77,7 +98,9 @@ const DashboardPage = () => {
             className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition ${
               activeTab === "activity"
                 ? "bg-[#111111] text-white"
-                : "bg-white text-gray-600"
+                : darkMode
+                  ? "bg-[#1C1C1E] text-gray-300"
+                  : "bg-white text-gray-600"
             }`}
           >
             Activity
@@ -87,17 +110,17 @@ const DashboardPage = () => {
         <div className="space-y-5">
           {activeTab === "overview" && (
             <>
-              <ProfileCard />
+              <ProfileCard darkMode={darkMode} />
 
-              <KeyStatusCard />
+              <KeyStatusCard darkMode={darkMode} />
 
-              <RecentActivity />
+              <RecentActivity darkMode={darkMode} />
             </>
           )}
 
-          {activeTab === "key-status" && <KeyStatusCard />}
+          {activeTab === "key-status" && <KeyStatusCard darkMode={darkMode} />}
 
-          {activeTab === "activity" && <RecentActivity />}
+          {activeTab === "activity" && <RecentActivity darkMode={darkMode} />}
         </div>
       </div>
 

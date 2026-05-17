@@ -8,7 +8,6 @@ import {
   BedDouble,
   Building2,
   ChevronDown,
-  DoorOpen,
   LockKeyhole,
   User2,
 } from "lucide-react";
@@ -179,24 +178,6 @@ const CreateAccountPage = () => {
 
                       <Input
                         placeholder="Enter room number"
-                        className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="mb-3 text-sm font-medium text-gray-700">
-                      Door Number
-                    </p>
-
-                    <div className="relative">
-                      <DoorOpen
-                        size={18}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                      />
-
-                      <Input
-                        placeholder="Enter door number"
                         className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
                       />
                     </div>

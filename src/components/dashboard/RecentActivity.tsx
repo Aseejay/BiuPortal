@@ -2,6 +2,10 @@
 
 import { ArrowDownLeft, ArrowUpRight, Clock3 } from "lucide-react";
 
+interface RecentActivityProps {
+  darkMode?: boolean;
+}
+
 const activities = [
   {
     type: "Dropped Key",
@@ -25,21 +29,39 @@ const activities = [
   },
 ];
 
-const RecentActivity = () => {
+const RecentActivity = ({ darkMode = false }: RecentActivityProps) => {
   return (
-    <div className="rounded-[30px] bg-white p-4">
+    <div
+      className={`rounded-[30px] p-4 transition ${
+        darkMode ? "bg-[#1C1C1E]" : "bg-white"
+      }`}
+    >
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h2 className="text-[20px] font-semibold text-gray-900">
+          <h2
+            className={`text-[20px] font-semibold ${
+              darkMode ? "text-white" : "text-gray-900"
+            }`}
+          >
             Recent Activity
           </h2>
 
-          <p className="mt-1 text-xs text-gray-500">
+          <p
+            className={`mt-1 text-xs ${
+              darkMode ? "text-gray-400" : "text-gray-500"
+            }`}
+          >
             Latest hostel key actions
           </p>
         </div>
 
-        <button className="rounded-full bg-[#F5F5F5] px-3 py-2 text-xs font-medium text-gray-700">
+        <button
+          className={`rounded-full px-3 py-2 text-xs font-medium ${
+            darkMode
+              ? "bg-[#2C2C2E] text-gray-300"
+              : "bg-[#F5F5F5] text-gray-700"
+          }`}
+        >
           View all
         </button>
       </div>
@@ -49,7 +71,12 @@ const RecentActivity = () => {
           const Icon = activity.icon;
 
           return (
-            <div key={index} className="rounded-[24px] bg-[#F8F8F8] p-3.5">
+            <div
+              key={index}
+              className={`rounded-[24px] p-3.5 ${
+                darkMode ? "bg-[#2C2C2E]" : "bg-[#F8F8F8]"
+              }`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex gap-3">
                   <div
@@ -59,14 +86,27 @@ const RecentActivity = () => {
                   </div>
 
                   <div>
-                    <h3 className="text-[15px] font-semibold text-gray-900">
+                    <h3
+                      className={`text-[15px] font-semibold ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {activity.type}
                     </h3>
 
                     <div className="mt-1.5 flex items-center gap-1.5">
-                      <Clock3 size={12} className="text-gray-400" />
+                      <Clock3
+                        size={12}
+                        className={darkMode ? "text-gray-500" : "text-gray-400"}
+                      />
 
-                      <p className="text-xs text-gray-500">{activity.time}</p>
+                      <p
+                        className={`text-xs ${
+                          darkMode ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
+                        {activity.time}
+                      </p>
                     </div>
                   </div>
                 </div>
