@@ -2,6 +2,8 @@
 
 import { ArrowDownLeft, ArrowUpRight, Clock3 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
 interface RecentActivityProps {
   darkMode?: boolean;
 }
@@ -30,6 +32,8 @@ const activities = [
 ];
 
 const RecentActivity = ({ darkMode = false }: RecentActivityProps) => {
+  const navigate = useNavigate();
+
   return (
     <div
       className={`rounded-[30px] p-4 transition ${
@@ -56,7 +60,8 @@ const RecentActivity = ({ darkMode = false }: RecentActivityProps) => {
         </div>
 
         <button
-          className={`rounded-full px-3 py-2 text-xs font-medium ${
+          onClick={() => navigate("/activity")}
+          className={`rounded-full px-3 py-2 text-xs font-medium transition ${
             darkMode
               ? "bg-[#2C2C2E] text-gray-300"
               : "bg-[#F5F5F5] text-gray-700"
