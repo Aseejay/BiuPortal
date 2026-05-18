@@ -46,65 +46,6 @@ const DashboardPage = () => {
         }`}
       >
         <div className="mx-auto max-w-md px-5 pt-6">
-          {/* HEADER */}
-          <div className="mb-7 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* AVATAR */}
-              <div className="relative">
-                <div className="h-14 w-14 overflow-hidden rounded-full">
-                  <img
-                    src="https://i.pravatar.cc/300"
-                    alt="profile"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-
-                <div className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-white bg-green-500" />
-              </div>
-
-              {/* INFO */}
-              <div>
-                <p
-                  className={`text-xs font-medium ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
-                  {greeting} 👋
-                </p>
-
-                <h1
-                  className={`mt-1 text-[18px] font-bold tracking-[-0.3px] ${
-                    darkMode ? "text-white" : "text-[#111111]"
-                  }`}
-                >
-                  Samuel Asije
-                </h1>
-
-                <p
-                  className={`mt-1 text-[11px] font-medium ${
-                    darkMode ? "text-gray-500" : "text-gray-400"
-                  }`}
-                >
-                  BIU/23/CSC/001
-                </p>
-              </div>
-            </div>
-
-            {/* DARK MODE */}
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className={`flex h-11 w-11 items-center justify-center rounded-full transition-all ${
-                darkMode ? "bg-[#1C1C1E] text-white" : "bg-white text-[#111111]"
-              } shadow-sm`}
-            >
-              {darkMode ? (
-                <Sun size={18} className="text-yellow-400" />
-              ) : (
-                <Moon size={18} />
-              )}
-            </button>
-          </div>
-
           {/* SMART ACCESS CARD */}
           <div
             className={`relative overflow-hidden rounded-[32px] p-5 ${
@@ -114,6 +55,61 @@ const DashboardPage = () => {
             <div className="absolute right-[-20px] top-[-20px] h-36 w-36 rounded-full bg-white/5" />
 
             <div className="relative z-10">
+              {/* PROFILE */}
+              <div className="mb-8 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {/* AVATAR */}
+                  <div className="relative">
+                    <div className="h-14 w-14 overflow-hidden rounded-full border-2 border-white/10">
+                      <img
+                        src="https://i.pravatar.cc/300"
+                        alt="profile"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+
+                    <div className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[#111111] bg-green-500" />
+                  </div>
+
+                  {/* INFO */}
+                  <div>
+                    <p className="text-[11px] font-medium text-gray-300">
+                      {greeting} 👋
+                    </p>
+
+                    <h1 className="mt-1 text-[17px] font-bold tracking-[-0.3px] text-white">
+                      Samuel Asije
+                    </h1>
+
+                    <p className="mt-1 text-[10px] font-medium text-gray-400">
+                      BIU/23/CSC/001
+                    </p>
+                  </div>
+                </div>
+
+                {/* ACTIONS */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setDarkMode(!darkMode)}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-xl"
+                  >
+                    {darkMode ? (
+                      <Sun size={16} className="text-yellow-400" />
+                    ) : (
+                      <Moon size={16} />
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setShowLogoutModal(true)}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-xl"
+                  >
+                    <Settings size={16} />
+                  </button>
+                </div>
+              </div>
+
+              {/* TITLE */}
               <div className="mb-8 flex items-start justify-between gap-4">
                 <div>
                   <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
@@ -151,27 +147,10 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* ACTIVITY HEADER */}
-          <div className="mb-4 mt-7">
-            <h2
-              className={`text-[20px] font-bold tracking-[-0.4px] ${
-                darkMode ? "text-white" : "text-[#111111]"
-              }`}
-            >
-              Activity
-            </h2>
-
-            <p
-              className={`mt-1 text-[13px] ${
-                darkMode ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
-              Recent hostel key activities
-            </p>
-          </div>
-
           {/* ACTIVITY */}
-          <RecentActivity darkMode={darkMode} />
+          <div className="mt-6">
+            <RecentActivity darkMode={darkMode} />
+          </div>
         </div>
 
         {/* BOTTOM NAV */}
@@ -181,10 +160,7 @@ const DashboardPage = () => {
               darkMode ? "bg-[#1A1A1A]" : "bg-[#111111]"
             } shadow-[0_10px_40px_rgba(0,0,0,0.18)]`}
           >
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="text-white"
-            >
+            <button className="text-white">
               <Home size={21} />
             </button>
 
@@ -209,93 +185,110 @@ const DashboardPage = () => {
       {showLogoutModal && (
         <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 p-5 backdrop-blur-sm md:items-center">
           <div
-            className={`w-full max-w-sm rounded-[32px] p-5 ${
+            className={`w-full max-w-sm overflow-hidden rounded-[32px] ${
               darkMode ? "bg-[#1A1A1A]" : "bg-white"
             }`}
           >
-            {/* HEADER */}
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                <h2
-                  className={`text-[20px] font-bold ${
-                    darkMode ? "text-white" : "text-[#111111]"
-                  }`}
-                >
-                  Logout
-                </h2>
-
-                <p
-                  className={`mt-1 text-xs ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  }`}
-                >
-                  Are you sure you want to logout?
-                </p>
-              </div>
-
-              <button
-                onClick={() => setShowLogoutModal(false)}
-                className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                  darkMode ? "bg-[#2A2A2A]" : "bg-[#F5F5F5]"
-                }`}
-              >
-                <X
-                  size={18}
-                  className={darkMode ? "text-white" : "text-[#111111]"}
-                />
-              </button>
-            </div>
-
-            {/* BODY */}
+            {/* TOP */}
             <div
-              className={`rounded-[24px] p-4 ${
-                darkMode ? "bg-[#232323]" : "bg-[#F7F7F7]"
+              className={`relative p-5 ${
+                darkMode ? "bg-[#202020]" : "bg-[#111111]"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100">
-                  <LogOut size={20} className="text-red-500" />
+              <div className="absolute right-[-20px] top-[-20px] h-32 w-32 rounded-full bg-white/5" />
+
+              <div className="relative z-10">
+                {/* CLOSE */}
+                <div className="mb-5 flex justify-end">
+                  <button
+                    onClick={() => setShowLogoutModal(false)}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white"
+                  >
+                    <X size={17} />
+                  </button>
                 </div>
 
-                <div>
-                  <p
-                    className={`text-sm font-semibold ${
-                      darkMode ? "text-white" : "text-[#111111]"
-                    }`}
-                  >
-                    Confirm Logout
+                {/* PROFILE */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="relative">
+                    <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-white/10">
+                      <img
+                        src="https://i.pravatar.cc/300"
+                        alt="profile"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+
+                    <div className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-[#111111] bg-green-500" />
+                  </div>
+
+                  <h2 className="mt-4 text-[20px] font-bold text-white">
+                    Samuel Asije
+                  </h2>
+
+                  <p className="mt-1 text-[11px] text-gray-400">
+                    BIU/23/CSC/001
                   </p>
 
-                  <p
-                    className={`mt-1 text-xs ${
-                      darkMode ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
-                    You will be redirected to homepage
-                  </p>
+                  <div className="mt-4 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
+                    Verified Resident
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* ACTIONS */}
-            <div className="mt-5 flex gap-3">
-              <button
-                onClick={() => setShowLogoutModal(false)}
-                className={`flex-1 rounded-full py-3 text-sm font-medium ${
-                  darkMode
-                    ? "bg-[#2A2A2A] text-white"
-                    : "bg-[#F5F5F5] text-[#111111]"
+            {/* CONTENT */}
+            <div className="p-5">
+              <div
+                className={`rounded-[24px] p-4 ${
+                  darkMode ? "bg-[#232323]" : "bg-[#F7F7F7]"
                 }`}
               >
-                Cancel
-              </button>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100">
+                    <LogOut size={20} className="text-red-500" />
+                  </div>
 
-              <button
-                onClick={() => navigate("/")}
-                className="flex-1 rounded-full bg-[#111111] py-3 text-sm font-medium text-white"
-              >
-                Logout
-              </button>
+                  <div>
+                    <p
+                      className={`text-sm font-semibold ${
+                        darkMode ? "text-white" : "text-[#111111]"
+                      }`}
+                    >
+                      Logout Session
+                    </p>
+
+                    <p
+                      className={`mt-1 text-xs ${
+                        darkMode ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      You will be redirected to homepage
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ACTIONS */}
+              <div className="mt-5 flex gap-3">
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className={`flex-1 rounded-full py-3 text-sm font-medium ${
+                    darkMode
+                      ? "bg-[#2A2A2A] text-white"
+                      : "bg-[#F5F5F5] text-[#111111]"
+                  }`}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={() => navigate("/")}
+                  className="flex-1 rounded-full bg-[#111111] py-3 text-sm font-medium text-white"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
         </div>
