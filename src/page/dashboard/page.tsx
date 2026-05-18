@@ -10,6 +10,7 @@ import {
   QrCode,
   Settings,
   Sun,
+  User,
   X,
 } from "lucide-react";
 
@@ -24,12 +25,7 @@ const DashboardPage = () => {
 
   const [darkMode, setDarkMode] = useState(false);
 
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-  const hour = new Date().getHours();
-
-  const greeting =
-    hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   useEffect(() => {
     window.scrollTo({
@@ -48,60 +44,6 @@ const DashboardPage = () => {
         <div className="mx-auto max-w-md">
           {/* BLACK SECTION */}
           <div className="overflow-hidden bg-[#111111] px-5 pb-8 pt-6">
-            {/* PROFILE */}
-            <div className="mb-8 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {/* AVATAR */}
-                <div className="relative">
-                  <div className="h-14 w-14 overflow-hidden rounded-full border-2 border-white/10">
-                    <img
-                      src="https://i.pravatar.cc/300"
-                      alt="profile"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-
-                  <div className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[#111111] bg-green-500" />
-                </div>
-
-                {/* INFO */}
-                <div>
-                  <p className="text-[11px] font-medium text-gray-300">
-                    {greeting} 👋
-                  </p>
-
-                  <h1 className="mt-1 text-[17px] font-bold tracking-[-0.3px] text-white">
-                    Samuel Asije
-                  </h1>
-
-                  <p className="mt-1 text-[10px] font-medium text-gray-400">
-                    BIU/23/CSC/001
-                  </p>
-                </div>
-              </div>
-
-              {/* ACTIONS */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setDarkMode(!darkMode)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white"
-                >
-                  {darkMode ? (
-                    <Sun size={16} className="text-yellow-400" />
-                  ) : (
-                    <Moon size={16} />
-                  )}
-                </button>
-
-                <button
-                  onClick={() => setShowLogoutModal(true)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white"
-                >
-                  <Settings size={16} />
-                </button>
-              </div>
-            </div>
-
             {/* SMART ACCESS */}
             <div>
               <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
@@ -170,7 +112,7 @@ const DashboardPage = () => {
             </button>
 
             <button
-              onClick={() => setShowLogoutModal(true)}
+              onClick={() => setShowSettingsModal(true)}
               className="text-[#8E8E93]"
             >
               <Settings size={21} />
@@ -179,8 +121,8 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* LOGOUT MODAL */}
-      {showLogoutModal && (
+      {/* SETTINGS MODAL */}
+      {showSettingsModal && (
         <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 p-5 backdrop-blur-sm md:items-center">
           <div
             className={`w-full max-w-sm overflow-hidden rounded-[32px] ${
@@ -194,22 +136,28 @@ const DashboardPage = () => {
               }`}
             >
               <div className="relative z-10">
+                {/* CLOSE */}
                 <div className="mb-5 flex justify-end">
                   <button
-                    onClick={() => setShowLogoutModal(false)}
+                    onClick={() => setShowSettingsModal(false)}
                     className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white"
                   >
                     <X size={17} />
                   </button>
                 </div>
 
+                {/* PROFILE */}
                 <div className="flex flex-col items-center text-center">
-                  <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-white/10">
-                    <img
-                      src="https://i.pravatar.cc/300"
-                      alt="profile"
-                      className="h-full w-full object-cover"
-                    />
+                  <div className="relative">
+                    <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-white/10">
+                      <img
+                        src="https://i.pravatar.cc/300"
+                        alt="profile"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+
+                    <div className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-[#111111] bg-green-500" />
                   </div>
 
                   <h2 className="mt-4 text-[20px] font-bold text-white">
@@ -227,57 +175,117 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            {/* CONTENT */}
-            <div className="p-5">
-              <div
-                className={`rounded-[24px] p-4 ${
+            {/* SETTINGS */}
+            <div className="space-y-3 p-5">
+              {/* DARK MODE */}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`flex w-full items-center justify-between rounded-[24px] p-4 ${
                   darkMode ? "bg-[#232323]" : "bg-[#F7F7F7]"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100">
-                    <LogOut size={20} className="text-red-500" />
+                  <div
+                    className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
+                      darkMode ? "bg-[#2A2A2A]" : "bg-white"
+                    }`}
+                  >
+                    {darkMode ? (
+                      <Sun size={18} className="text-yellow-400" />
+                    ) : (
+                      <Moon size={18} className="text-[#111111]" />
+                    )}
                   </div>
 
-                  <div>
+                  <div className="text-left">
                     <p
                       className={`text-sm font-semibold ${
                         darkMode ? "text-white" : "text-[#111111]"
                       }`}
                     >
-                      Logout Session
+                      Appearance
                     </p>
 
                     <p
-                      className={`mt-1 text-xs ${
+                      className={`mt-1 text-[11px] ${
                         darkMode ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      You will be redirected to homepage
+                      Switch dark mode
                     </p>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-5 flex gap-3">
-                <button
-                  onClick={() => setShowLogoutModal(false)}
-                  className={`flex-1 rounded-full py-3 text-sm font-medium ${
-                    darkMode
-                      ? "bg-[#2A2A2A] text-white"
-                      : "bg-[#F5F5F5] text-[#111111]"
+                <div
+                  className={`h-7 w-12 rounded-full p-1 transition-all ${
+                    darkMode ? "bg-white" : "bg-[#D1D5DB]"
                   }`}
                 >
-                  Cancel
-                </button>
+                  <div
+                    className={`h-5 w-5 rounded-full bg-black transition-all ${
+                      darkMode ? "translate-x-5" : "translate-x-0"
+                    }`}
+                  />
+                </div>
+              </button>
 
-                <button
-                  onClick={() => navigate("/")}
-                  className="flex-1 rounded-full bg-[#111111] py-3 text-sm font-medium text-white"
-                >
-                  Logout
-                </button>
-              </div>
+              {/* PROFILE */}
+              <button
+                className={`flex w-full items-center justify-between rounded-[24px] p-4 ${
+                  darkMode ? "bg-[#232323]" : "bg-[#F7F7F7]"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
+                      darkMode ? "bg-[#2A2A2A]" : "bg-white"
+                    }`}
+                  >
+                    <User
+                      size={18}
+                      className={darkMode ? "text-white" : "text-[#111111]"}
+                    />
+                  </div>
+
+                  <div className="text-left">
+                    <p
+                      className={`text-sm font-semibold ${
+                        darkMode ? "text-white" : "text-[#111111]"
+                      }`}
+                    >
+                      Resident Profile
+                    </p>
+
+                    <p
+                      className={`mt-1 text-[11px] ${
+                        darkMode ? "text-gray-400" : "text-gray-500"
+                      }`}
+                    >
+                      View hostel details
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              {/* LOGOUT */}
+              <button
+                onClick={() => navigate("/")}
+                className="flex w-full items-center justify-between rounded-[24px] bg-red-500 p-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20">
+                    <LogOut size={18} className="text-white" />
+                  </div>
+
+                  <div className="text-left">
+                    <p className="text-sm font-semibold text-white">Logout</p>
+
+                    <p className="mt-1 text-[11px] text-red-100">
+                      End current session
+                    </p>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
         </div>
