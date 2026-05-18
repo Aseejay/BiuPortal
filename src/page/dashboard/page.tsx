@@ -41,84 +41,82 @@ const DashboardPage = () => {
   return (
     <>
       <div
-        className={`min-h-screen pb-36 transition-all duration-300 ${
+        className={`min-h-screen pb-36 ${
           darkMode ? "bg-[#111111]" : "bg-[#F3F3F3]"
         }`}
       >
-        <div className="mx-auto max-w-md px-5 pt-6">
-          {/* SMART ACCESS CARD */}
-          <div
-            className={`relative overflow-hidden rounded-[32px] p-5 ${
-              darkMode ? "bg-[#1A1A1A]" : "bg-[#111111]"
-            }`}
-          >
-            <div className="absolute right-[-20px] top-[-20px] h-36 w-36 rounded-full bg-white/5" />
-
-            <div className="relative z-10">
-              {/* PROFILE */}
-              <div className="mb-8 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {/* AVATAR */}
-                  <div className="relative">
-                    <div className="h-14 w-14 overflow-hidden rounded-full border-2 border-white/10">
-                      <img
-                        src="https://i.pravatar.cc/300"
-                        alt="profile"
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-
-                    <div className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[#111111] bg-green-500" />
+        <div className="mx-auto max-w-md">
+          {/* BLACK SECTION */}
+          <div className="overflow-hidden bg-[#111111] px-5 pb-8 pt-6">
+            {/* PROFILE */}
+            <div className="mb-8 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {/* AVATAR */}
+                <div className="relative">
+                  <div className="h-14 w-14 overflow-hidden rounded-full border-2 border-white/10">
+                    <img
+                      src="https://i.pravatar.cc/300"
+                      alt="profile"
+                      className="h-full w-full object-cover"
+                    />
                   </div>
 
-                  {/* INFO */}
-                  <div>
-                    <p className="text-[11px] font-medium text-gray-300">
-                      {greeting} 👋
-                    </p>
-
-                    <h1 className="mt-1 text-[17px] font-bold tracking-[-0.3px] text-white">
-                      Samuel Asije
-                    </h1>
-
-                    <p className="mt-1 text-[10px] font-medium text-gray-400">
-                      BIU/23/CSC/001
-                    </p>
-                  </div>
+                  <div className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[#111111] bg-green-500" />
                 </div>
 
-                {/* ACTIONS */}
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setDarkMode(!darkMode)}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-xl"
-                  >
-                    {darkMode ? (
-                      <Sun size={16} className="text-yellow-400" />
-                    ) : (
-                      <Moon size={16} />
-                    )}
-                  </button>
+                {/* INFO */}
+                <div>
+                  <p className="text-[11px] font-medium text-gray-300">
+                    {greeting} 👋
+                  </p>
 
-                  <button
-                    onClick={() => setShowLogoutModal(true)}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-xl"
-                  >
-                    <Settings size={16} />
-                  </button>
+                  <h1 className="mt-1 text-[17px] font-bold tracking-[-0.3px] text-white">
+                    Samuel Asije
+                  </h1>
+
+                  <p className="mt-1 text-[10px] font-medium text-gray-400">
+                    BIU/23/CSC/001
+                  </p>
                 </div>
               </div>
 
-              {/* TITLE */}
+              {/* ACTIONS */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white"
+                >
+                  {darkMode ? (
+                    <Sun size={16} className="text-yellow-400" />
+                  ) : (
+                    <Moon size={16} />
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setShowLogoutModal(true)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white"
+                >
+                  <Settings size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* SMART ACCESS */}
+            <div>
+              <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
+                Smart Access
+              </div>
+
               <div className="mb-8 flex items-start justify-between gap-4">
                 <div>
-                  <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
-                    Smart Access
-                  </div>
-
                   <h2 className="max-w-[200px] text-[24px] font-bold leading-tight tracking-[-0.8px] text-white">
                     Hostel QR Key System
                   </h2>
+
+                  <p className="mt-3 text-[13px] leading-6 text-gray-300">
+                    Secure hostel key collection and drop verification.
+                  </p>
                 </div>
 
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-black">
@@ -147,8 +145,8 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* ACTIVITY */}
-          <div className="mt-6">
+          {/* WHITE SECTION */}
+          <div className="px-5 pt-6">
             <RecentActivity darkMode={darkMode} />
           </div>
         </div>
@@ -195,10 +193,7 @@ const DashboardPage = () => {
                 darkMode ? "bg-[#202020]" : "bg-[#111111]"
               }`}
             >
-              <div className="absolute right-[-20px] top-[-20px] h-32 w-32 rounded-full bg-white/5" />
-
               <div className="relative z-10">
-                {/* CLOSE */}
                 <div className="mb-5 flex justify-end">
                   <button
                     onClick={() => setShowLogoutModal(false)}
@@ -208,18 +203,13 @@ const DashboardPage = () => {
                   </button>
                 </div>
 
-                {/* PROFILE */}
                 <div className="flex flex-col items-center text-center">
-                  <div className="relative">
-                    <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-white/10">
-                      <img
-                        src="https://i.pravatar.cc/300"
-                        alt="profile"
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-
-                    <div className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-[#111111] bg-green-500" />
+                  <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-white/10">
+                    <img
+                      src="https://i.pravatar.cc/300"
+                      alt="profile"
+                      className="h-full w-full object-cover"
+                    />
                   </div>
 
                   <h2 className="mt-4 text-[20px] font-bold text-white">
@@ -269,7 +259,6 @@ const DashboardPage = () => {
                 </div>
               </div>
 
-              {/* ACTIONS */}
               <div className="mt-5 flex gap-3">
                 <button
                   onClick={() => setShowLogoutModal(false)}
