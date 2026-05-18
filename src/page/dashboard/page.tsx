@@ -6,7 +6,6 @@ import { ArrowUpRight, Home, Moon, QrCode, Settings, Sun } from "lucide-react";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
-import ProfileCard from "../../components/dashboard/ProfileCard";
 import RecentActivity from "../../components/dashboard/RecentActivity";
 
 const DashboardPage = () => {
