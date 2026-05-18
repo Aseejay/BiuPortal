@@ -42,32 +42,47 @@ const DashboardPage = () => {
         }`}
       >
         <div className="mx-auto max-w-md">
-          {/* BLACK SECTION */}
-          <div className="overflow-hidden bg-[#111111] px-5 pb-8 pt-6">
+          {/* TOP BLACK SECTION */}
+          <div className="relative overflow-hidden bg-[#111111] px-5 pb-14 pt-6">
+            {/* TOP CURVES */}
+            <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/[0.03]" />
+
+            <div className="absolute -left-10 top-20 h-40 w-40 rounded-full bg-white/[0.02]" />
+
+            {/* SETTINGS */}
+            <div className="mb-10 flex justify-end">
+              <button
+                onClick={() => setShowSettingsModal(true)}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-xl"
+              >
+                <Settings size={18} />
+              </button>
+            </div>
+
             {/* SMART ACCESS */}
-            <div>
+            <div className="relative z-10">
               <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
                 Smart Access
               </div>
 
               <div className="mb-8 flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="max-w-[200px] text-[24px] font-bold leading-tight tracking-[-0.8px] text-white">
+                  <h2 className="max-w-[210px] text-[26px] font-bold leading-tight tracking-[-1px] text-white">
                     Hostel QR Key System
                   </h2>
 
-                  <p className="mt-3 text-[13px] leading-6 text-gray-300">
+                  <p className="mt-3 max-w-[260px] text-[13px] leading-6 text-gray-300">
                     Secure hostel key collection and drop verification.
                   </p>
                 </div>
 
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-black">
-                  <QrCode size={24} />
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-black shadow-lg">
+                  <QrCode size={26} />
                 </div>
               </div>
 
               {/* LAST ACTIVITY */}
-              <div className="rounded-[24px] bg-white/10 p-4 backdrop-blur-xl">
+              <div className="rounded-[28px] border border-white/5 bg-white/10 p-4 backdrop-blur-xl">
                 <p className="text-[11px] text-gray-300">Last key activity</p>
 
                 <div className="mt-3 flex items-center justify-between gap-3">
@@ -79,16 +94,19 @@ const DashboardPage = () => {
                     <p className="mt-1 text-xs text-gray-300">2 mins ago</p>
                   </div>
 
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black">
                     <ArrowUpRight size={18} />
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* CURVED BOTTOM */}
+            <div className="absolute bottom-0 left-0 h-10 w-full rounded-t-[36px] bg-[#F3F3F3]" />
           </div>
 
           {/* WHITE SECTION */}
-          <div className="px-5 pt-6">
+          <div className="px-5 pt-3">
             <RecentActivity darkMode={darkMode} />
           </div>
         </div>
@@ -131,10 +149,15 @@ const DashboardPage = () => {
           >
             {/* TOP */}
             <div
-              className={`relative p-5 ${
+              className={`relative overflow-hidden p-5 ${
                 darkMode ? "bg-[#202020]" : "bg-[#111111]"
               }`}
             >
+              {/* CURVES */}
+              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/[0.04]" />
+
+              <div className="absolute -left-6 bottom-0 h-24 w-24 rounded-full bg-white/[0.03]" />
+
               <div className="relative z-10">
                 {/* CLOSE */}
                 <div className="mb-5 flex justify-end">
