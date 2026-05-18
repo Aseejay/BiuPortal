@@ -15,6 +15,11 @@ const DashboardPage = () => {
 
   const [darkMode, setDarkMode] = useState(false);
 
+  const hour = new Date().getHours();
+
+  const greeting =
+    hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -31,24 +36,49 @@ const DashboardPage = () => {
       <div className="mx-auto max-w-md px-5 pt-6">
         {/* HEADER */}
         <div className="mb-7 flex items-center justify-between">
-          <div>
-            <p
-              className={`text-sm font-medium ${
-                darkMode ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
-              Welcome back 👋
-            </p>
+          <div className="flex items-center gap-4">
+            {/* AVATAR */}
+            <div className="relative">
+              <div className="h-16 w-16 overflow-hidden rounded-[22px]">
+                <img
+                  src="https://i.pravatar.cc/300"
+                  alt="profile"
+                  className="h-full w-full object-cover"
+                />
+              </div>
 
-            <h1
-              className={`mt-1 text-[24px] font-bold tracking-[-1px] ${
-                darkMode ? "text-white" : "text-[#111111]"
-              }`}
-            >
-              Dashboard
-            </h1>
+              <div className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-white bg-green-500" />
+            </div>
+
+            {/* USER INFO */}
+            <div>
+              <p
+                className={`text-sm font-medium ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                {greeting} 👋
+              </p>
+
+              <h1
+                className={`mt-1 text-[22px] font-bold tracking-[-0.5px] ${
+                  darkMode ? "text-white" : "text-[#111111]"
+                }`}
+              >
+                Samuel Asije
+              </h1>
+
+              <p
+                className={`mt-1 text-xs font-medium tracking-wide ${
+                  darkMode ? "text-gray-500" : "text-gray-400"
+                }`}
+              >
+                BIU/23/CSC/001
+              </p>
+            </div>
           </div>
 
+          {/* DARK MODE */}
           <button
             onClick={() => setDarkMode(!darkMode)}
             className={`flex h-12 w-12 items-center justify-center rounded-full transition-all ${
@@ -109,7 +139,7 @@ const DashboardPage = () => {
         </div>
 
         {/* ACTIVITY HEADER */}
-        <div className="mt-7 mb-4 flex items-center justify-between">
+        <div className="mb-4 mt-7 flex items-center justify-between">
           <div>
             <h2
               className={`text-[22px] font-bold tracking-[-0.5px] ${
