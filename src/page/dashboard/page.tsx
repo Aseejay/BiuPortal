@@ -57,11 +57,11 @@ const DashboardPage = () => {
 
               <div className="mb-8 flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="max-w-[210px] text-[26px] font-bold leading-tight tracking-[-1px] text-white">
-                    Hostel QR Key System
+                  <h2 className="max-w-[240px] text-[32px] font-bold leading-[1.05] tracking-[-1.4px] text-white">
+                    BIU Hostel QR Key System
                   </h2>
 
-                  <p className="mt-3 max-w-[260px] text-[13px] leading-6 text-gray-300">
+                  <p className="mt-4 max-w-[270px] text-[13px] leading-6 text-gray-300">
                     Secure hostel key collection and drop verification.
                   </p>
                 </div>
@@ -96,7 +96,7 @@ const DashboardPage = () => {
           </div>
 
           {/* WHITE SECTION */}
-          <div className="px-5 pt-3">
+          <div className="px-5 pt-0">
             <RecentActivity darkMode={darkMode} />
           </div>
         </div>
