@@ -45,7 +45,7 @@ const DashboardPage = () => {
             </p>
 
             <h1
-              className={`mt-1 text-[2sam4px] font-bold tracking-[-1px] ${
+              className={`mt-1 text-[24px] font-bold tracking-[-1px] ${
                 darkMode ? "text-white" : "text-[#111111]"
               }`}
             >
