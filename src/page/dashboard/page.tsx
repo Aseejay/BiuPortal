@@ -49,16 +49,6 @@ const DashboardPage = () => {
 
             <div className="absolute -left-10 top-20 h-40 w-40 rounded-full bg-white/[0.02]" />
 
-            {/* SETTINGS */}
-            <div className="mb-10 flex justify-end">
-              <button
-                onClick={() => setShowSettingsModal(true)}
-                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-xl"
-              >
-                <Settings size={18} />
-              </button>
-            </div>
-
             {/* SMART ACCESS */}
             <div className="relative z-10">
               <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
