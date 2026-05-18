@@ -45,7 +45,7 @@ const DashboardPage = () => {
             </p>
 
             <h1
-              className={`mt-1 text-[34px] font-bold tracking-[-1px] ${
+              className={`mt-1 text-[2sam4px] font-bold tracking-[-1px] ${
                 darkMode ? "text-white" : "text-[#111111]"
               }`}
             >
@@ -79,11 +79,11 @@ const DashboardPage = () => {
             <div className="mb-10 flex items-start justify-between">
               <div>
                 <div className="mb-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white">
-                  Active Session
+                  Smart Access
                 </div>
 
                 <h2 className="max-w-[220px] text-[28px] font-bold leading-tight tracking-[-1px] text-white">
-                  Smart Hostel Key Access
+                  Hostel QR Key System
                 </h2>
               </div>
 
@@ -92,66 +92,23 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-[28px] bg-white/10 p-4 backdrop-blur-xl">
-              <div>
-                <p className="text-xs text-gray-300">Last key activity</p>
+            <div className="rounded-[28px] bg-white/10 p-5 backdrop-blur-xl">
+              <p className="text-xs text-gray-300">Last key activity</p>
 
-                <p className="mt-1 text-sm font-semibold text-white">
-                  Room A-204 Collected
-                </p>
-              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <div>
+                  <p className="text-lg font-semibold text-white">
+                    Room A-204 Collected
+                  </p>
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black">
-                <ArrowUpRight size={20} />
+                  <p className="mt-1 text-sm text-gray-300">2 mins ago</p>
+                </div>
+
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black">
+                  <ArrowUpRight size={20} />
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* STATS */}
-        <div className="mt-5 grid grid-cols-2 gap-4">
-          <div
-            className={`rounded-[28px] p-5 ${
-              darkMode ? "bg-[#1A1A1A]" : "bg-white"
-            }`}
-          >
-            <p
-              className={`text-sm ${
-                darkMode ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
-              Keys In Use
-            </p>
-
-            <h3
-              className={`mt-3 text-[30px] font-bold tracking-[-1px] ${
-                darkMode ? "text-white" : "text-[#111111]"
-              }`}
-            >
-              04
-            </h3>
-          </div>
-
-          <div
-            className={`rounded-[28px] p-5 ${
-              darkMode ? "bg-[#1A1A1A]" : "bg-white"
-            }`}
-          >
-            <p
-              className={`text-sm ${
-                darkMode ? "text-gray-400" : "text-gray-500"
-              }`}
-            >
-              Scans Today
-            </p>
-
-            <h3
-              className={`mt-3 text-[30px] font-bold tracking-[-1px] ${
-                darkMode ? "text-white" : "text-[#111111]"
-              }`}
-            >
-              18
-            </h3>
           </div>
         </div>
 
