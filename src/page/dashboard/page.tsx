@@ -7,15 +7,12 @@ import { ArrowUpRight, Home, Moon, QrCode, Settings, Sun } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import ProfileCard from "../../components/dashboard/ProfileCard";
-import KeyStatusCard from "../../components/dashboard/KeyCardStatus";
 import RecentActivity from "../../components/dashboard/RecentActivity";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-
-  const [activeTab, setActiveTab] = useState("overview");
 
   const [darkMode, setDarkMode] = useState(false);
 
@@ -24,7 +21,7 @@ const DashboardPage = () => {
       top: 0,
       behavior: "smooth",
     });
-  }, [location.pathname, activeTab]);
+  }, [location.pathname]);
 
   return (
     <div
@@ -67,7 +64,7 @@ const DashboardPage = () => {
           </button>
         </div>
 
-        {/* MAIN QR CARD */}
+        {/* SMART ACCESS CARD */}
         <div
           className={`relative overflow-hidden rounded-[36px] p-6 ${
             darkMode ? "bg-[#1A1A1A]" : "bg-[#111111]"
@@ -112,64 +109,29 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* TABS */}
-        <div className="mt-7 flex items-center gap-3 overflow-x-auto no-scrollbar">
-          <button
-            onClick={() => setActiveTab("overview")}
-            className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition-all ${
-              activeTab === "overview"
-                ? "bg-[#111111] text-white"
-                : darkMode
-                  ? "bg-[#1C1C1E] text-gray-300"
-                  : "bg-white text-gray-600"
-            }`}
-          >
-            Overview
-          </button>
+        {/* ACTIVITY HEADER */}
+        <div className="mt-7 mb-4 flex items-center justify-between">
+          <div>
+            <h2
+              className={`text-[22px] font-bold tracking-[-0.5px] ${
+                darkMode ? "text-white" : "text-[#111111]"
+              }`}
+            >
+              Activity
+            </h2>
 
-          <button
-            onClick={() => setActiveTab("key-status")}
-            className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition-all ${
-              activeTab === "key-status"
-                ? "bg-[#111111] text-white"
-                : darkMode
-                  ? "bg-[#1C1C1E] text-gray-300"
-                  : "bg-white text-gray-600"
-            }`}
-          >
-            Key Status
-          </button>
-
-          <button
-            onClick={() => setActiveTab("activity")}
-            className={`whitespace-nowrap rounded-full px-5 py-3 text-sm font-medium transition-all ${
-              activeTab === "activity"
-                ? "bg-[#111111] text-white"
-                : darkMode
-                  ? "bg-[#1C1C1E] text-gray-300"
-                  : "bg-white text-gray-600"
-            }`}
-          >
-            Activity
-          </button>
+            <p
+              className={`mt-1 text-sm ${
+                darkMode ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              Recent hostel key activities
+            </p>
+          </div>
         </div>
 
-        {/* CONTENT */}
-        <div className="mt-5 space-y-5">
-          {activeTab === "overview" && (
-            <>
-              <ProfileCard darkMode={darkMode} />
-
-              <KeyStatusCard darkMode={darkMode} />
-
-              <RecentActivity darkMode={darkMode} />
-            </>
-          )}
-
-          {activeTab === "key-status" && <KeyStatusCard darkMode={darkMode} />}
-
-          {activeTab === "activity" && <RecentActivity darkMode={darkMode} />}
-        </div>
+        {/* ACTIVITY */}
+        <RecentActivity darkMode={darkMode} />
       </div>
 
       {/* BOTTOM NAV */}
