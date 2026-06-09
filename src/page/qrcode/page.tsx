@@ -1,17 +1,35 @@
 // src/pages/scan/page.tsx
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { ArrowLeft, QrCode, ScanLine, ShieldCheck } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  QrCode,
+  ScanLine,
+  ShieldCheck,
+  XCircle,
+} from "lucide-react";
 
 import { Html5Qrcode } from "html5-qrcode";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { useHostelStore } from "../../store/useHostelStore";
+
 const ScanPage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
+
+  const [scanMessage, setScanMessage] = useState("");
+  const [scanStatus, setScanStatus] = useState<"success" | "error" | "">("");
+
+  const hasScannedRef = useRef(false);
+
+  const student = useHostelStore((state) => state.student);
+  const isLoggedIn = useHostelStore((state) => state.isLoggedIn);
+  const addActivity = useHostelStore((state) => state.addActivity);
 
   useEffect(() => {
     window.scrollTo({
@@ -21,13 +39,37 @@ const ScanPage = () => {
   }, [location.pathname]);
 
   useEffect(() => {
+    if (!isLoggedIn || !student) {
+      navigate("/");
+    }
+  }, [isLoggedIn, student, navigate]);
+
+  useEffect(() => {
+    if (!isLoggedIn || !student) {
+      return;
+    }
+
     const html5QrCode = new Html5Qrcode("reader");
+
+    const stopScanner = async () => {
+      try {
+        const scannerState = html5QrCode.getState();
+
+        if (scannerState === 2) {
+          await html5QrCode.stop();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     const startScanner = async () => {
       try {
         const devices = await Html5Qrcode.getCameras();
 
         if (!devices || devices.length === 0) {
+          setScanStatus("error");
+          setScanMessage("No camera found on this device");
           return;
         }
 
@@ -45,24 +87,56 @@ const ScanPage = () => {
               height: 260,
             },
           },
-          (decodedText) => {
-            console.log(decodedText);
+          async (decodedText) => {
+            if (hasScannedRef.current) {
+              return;
+            }
 
-            alert(`QR Scanned Successfully: ${decodedText}`);
+            const qrText = decodedText.trim().toLowerCase();
+
+            if (qrText !== "drop" && qrText !== "collect") {
+              setScanStatus("error");
+              setScanMessage(
+                "Invalid QR code. Please scan the official drop or collect QR code.",
+              );
+              return;
+            }
+
+            hasScannedRef.current = true;
+
+            if (qrText === "drop") {
+              addActivity("Dropped Key");
+              setScanStatus("success");
+              setScanMessage("Key dropped successfully");
+            }
+
+            if (qrText === "collect") {
+              addActivity("Collected Key");
+              setScanStatus("success");
+              setScanMessage("Key collected successfully");
+            }
+
+            await stopScanner();
+
+            setTimeout(() => {
+              navigate("/dashboard");
+            }, 1200);
           },
           () => {},
         );
       } catch (error) {
         console.log(error);
+        setScanStatus("error");
+        setScanMessage("Unable to start scanner. Please allow camera access.");
       }
     };
 
     startScanner();
 
     return () => {
-      html5QrCode.stop().catch(() => {});
+      stopScanner();
     };
-  }, []);
+  }, [addActivity, isLoggedIn, navigate, student]);
 
   return (
     <div className="min-h-screen bg-[#F3F3F3] px-5 py-6">
@@ -120,7 +194,7 @@ const ScanPage = () => {
                 </h2>
 
                 <p className="mt-1 text-xs text-gray-300">
-                  Align QR within frame
+                  QR code must contain either drop or collect
                 </p>
               </div>
             </div>
@@ -128,8 +202,75 @@ const ScanPage = () => {
             <div className="overflow-hidden rounded-[30px] bg-black p-3">
               <div id="reader" className="overflow-hidden rounded-[24px]" />
             </div>
+
+            {scanMessage && (
+              <div
+                className={`mt-4 flex items-center gap-3 rounded-[22px] p-4 ${
+                  scanStatus === "success" ? "bg-[#DCFCE7]" : "bg-[#FEE2E2]"
+                }`}
+              >
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                    scanStatus === "success" ? "bg-[#16A34A]" : "bg-[#DC2626]"
+                  }`}
+                >
+                  {scanStatus === "success" ? (
+                    <CheckCircle2 size={20} className="text-white" />
+                  ) : (
+                    <XCircle size={20} className="text-white" />
+                  )}
+                </div>
+
+                <div>
+                  <p
+                    className={`text-sm font-semibold ${
+                      scanStatus === "success"
+                        ? "text-[#166534]"
+                        : "text-[#991B1B]"
+                    }`}
+                  >
+                    {scanStatus === "success" ? "Success" : "Scan Error"}
+                  </p>
+
+                  <p
+                    className={`mt-1 text-xs leading-5 ${
+                      scanStatus === "success"
+                        ? "text-[#166534]"
+                        : "text-[#991B1B]"
+                    }`}
+                  >
+                    {scanMessage}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* STUDENT CARD */}
+        {student && (
+          <div className="mb-5 rounded-[34px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+            <div className="mb-1 flex items-center justify-between">
+              <p className="text-[12px] font-medium text-gray-400">
+                Registered Resident
+              </p>
+
+              <span className="rounded-full bg-[#DCFCE7] px-3 py-1 text-[10px] font-bold text-[#16A34A]">
+                VERIFIED
+              </span>
+            </div>
+
+            <h3 className="mt-2 text-[17px] font-semibold text-[#111111]">
+              {student.fullName}
+            </h3>
+
+            <p className="mt-1 text-xs text-gray-500">{student.matricNumber}</p>
+
+            <p className="mt-3 text-[13px] leading-6 text-gray-500">
+              {student.hostel} • {student.flat} • Room {student.roomNumber}
+            </p>
+          </div>
+        )}
 
         {/* INFO CARD */}
         <div className="rounded-[34px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
@@ -154,8 +295,9 @@ const ScanPage = () => {
               <div className="mt-2 h-2.5 w-2.5 rounded-full bg-[#8B5CF6]" />
 
               <p className="text-[13px] leading-6 text-gray-500">
-                Ensure you are physically at the porter&apos;s lodge before
-                scanning.
+                The QR code must contain the text{" "}
+                <span className="font-semibold text-[#111111]">drop</span> or{" "}
+                <span className="font-semibold text-[#111111]">collect</span>.
               </p>
             </div>
 
@@ -163,7 +305,8 @@ const ScanPage = () => {
               <div className="mt-2 h-2.5 w-2.5 rounded-full bg-[#8B5CF6]" />
 
               <p className="text-[13px] leading-6 text-gray-500">
-                Use only official QR codes issued by authorized hostel staff.
+                If the QR code contains anything else, the scan will be
+                rejected.
               </p>
             </div>
 
@@ -171,8 +314,8 @@ const ScanPage = () => {
               <div className="mt-2 h-2.5 w-2.5 rounded-full bg-[#8B5CF6]" />
 
               <p className="text-[13px] leading-6 text-gray-500">
-                Hold your device steady and ensure proper lighting for fast
-                scanning.
+                Once accepted, the student hostel, flat, and room number will be
+                saved in recent activity.
               </p>
             </div>
           </div>

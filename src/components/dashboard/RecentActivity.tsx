@@ -4,38 +4,16 @@ import { ArrowDownLeft, ArrowUpRight, Clock3 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 
+import { useHostelStore } from "../../store/useHostelStore";
+
 interface RecentActivityProps {
   darkMode?: boolean;
 }
 
-const activities = [
-  {
-    type: "Dropped Key",
-    room: "Room A-204",
-    time: "Today, 8:45 AM",
-    status: "AT PORTER",
-    icon: ArrowDownLeft,
-    iconBg: "bg-[#DCFCE7]",
-    iconColor: "text-[#16A34A]",
-    statusBg: "bg-[#DCFCE7]",
-    statusColor: "text-[#16A34A]",
-  },
-
-  {
-    type: "Collected Key",
-    room: "Room B-105",
-    time: "Yesterday, 7:10 PM",
-    status: "COLLECTED",
-    icon: ArrowUpRight,
-    iconBg: "bg-[#DBEAFE]",
-    iconColor: "text-[#2563EB]",
-    statusBg: "bg-[#DBEAFE]",
-    statusColor: "text-[#2563EB]",
-  },
-];
-
 const RecentActivity = ({ darkMode = false }: RecentActivityProps) => {
   const navigate = useNavigate();
+
+  const activities = useHostelStore((state) => state.activities);
 
   return (
     <div
@@ -83,12 +61,46 @@ const RecentActivity = ({ darkMode = false }: RecentActivityProps) => {
 
       {/* ACTIVITIES */}
       <div className="space-y-3 p-4">
-        {activities.map((activity, index) => {
-          const Icon = activity.icon;
+        {activities.length === 0 && (
+          <div
+            className={`rounded-[26px] p-5 text-center ${
+              darkMode ? "bg-[#232323]" : "bg-[#F8F8F8]"
+            }`}
+          >
+            <p
+              className={`text-sm font-semibold ${
+                darkMode ? "text-white" : "text-[#111111]"
+              }`}
+            >
+              No activity yet
+            </p>
+
+            <p
+              className={`mt-1 text-xs ${
+                darkMode ? "text-gray-400" : "text-gray-500"
+              }`}
+            >
+              Scan a drop or collect QR code to see activity here.
+            </p>
+          </div>
+        )}
+
+        {activities.slice(0, 5).map((activity) => {
+          const isDrop = activity.type === "Dropped Key";
+
+          const Icon = isDrop ? ArrowDownLeft : ArrowUpRight;
+
+          const iconBg = isDrop ? "bg-[#DCFCE7]" : "bg-[#DBEAFE]";
+
+          const iconColor = isDrop ? "text-[#16A34A]" : "text-[#2563EB]";
+
+          const statusBg = isDrop ? "bg-[#DCFCE7]" : "bg-[#DBEAFE]";
+
+          const statusColor = isDrop ? "text-[#16A34A]" : "text-[#2563EB]";
 
           return (
             <div
-              key={index}
+              key={activity.id}
               className={`rounded-[26px] p-4 transition-all ${
                 darkMode ? "bg-[#232323]" : "bg-[#F8F8F8]"
               }`}
@@ -98,9 +110,9 @@ const RecentActivity = ({ darkMode = false }: RecentActivityProps) => {
                 <div className="flex gap-3">
                   {/* ICON */}
                   <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-2xl ${activity.iconBg}`}
+                    className={`flex h-12 w-12 items-center justify-center rounded-2xl ${iconBg}`}
                   >
-                    <Icon size={20} className={activity.iconColor} />
+                    <Icon size={20} className={iconColor} />
                   </div>
 
                   {/* CONTENT */}
@@ -118,7 +130,8 @@ const RecentActivity = ({ darkMode = false }: RecentActivityProps) => {
                         darkMode ? "text-gray-500" : "text-gray-400"
                       }`}
                     >
-                      {activity.room}
+                      {activity.hostel} • {activity.flat} • Room{" "}
+                      {activity.roomNumber}
                     </p>
 
                     <div className="mt-2 flex items-center gap-1.5">
@@ -139,9 +152,9 @@ const RecentActivity = ({ darkMode = false }: RecentActivityProps) => {
                 </div>
 
                 {/* STATUS */}
-                <div className={`rounded-full px-3 py-1 ${activity.statusBg}`}>
+                <div className={`rounded-full px-3 py-1 ${statusBg}`}>
                   <span
-                    className={`text-[9px] font-bold tracking-wide ${activity.statusColor}`}
+                    className={`text-[9px] font-bold tracking-wide ${statusColor}`}
                   >
                     {activity.status}
                   </span>

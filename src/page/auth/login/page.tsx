@@ -4,19 +4,47 @@ import { ArrowRight, LockKeyhole, User2 } from "lucide-react";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
+import { useHostelStore } from "../../../store/useHostelStore";
 
 const LoginPage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
 
+  const [matricNumber, setMatricNumber] = useState("");
+  const [password, setPassword] = useState("");
+
+  const loginStudent = useHostelStore((state) => state.loginStudent);
+  const student = useHostelStore((state) => state.student);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  const handleLogin = () => {
+    if (!matricNumber.trim() || !password.trim()) {
+      alert("Please enter your matric number and password");
+      return;
+    }
+
+    if (!student) {
+      alert("No account found. Please create an account first.");
+      return;
+    }
+
+    const success = loginStudent(matricNumber, password);
+
+    if (!success) {
+      alert("Invalid matric number or password");
+      return;
+    }
+
+    navigate("/dashboard");
+  };
 
   return (
     <div className="flex min-h-screen bg-[#F5F5F5] px-5 py-6">
@@ -72,6 +100,8 @@ const LoginPage = () => {
                   />
 
                   <Input
+                    value={matricNumber}
+                    onChange={(e) => setMatricNumber(e.target.value)}
                     placeholder="Enter matric number"
                     className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
                   />
@@ -90,6 +120,8 @@ const LoginPage = () => {
                   />
 
                   <Input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     type="password"
                     placeholder="Enter password"
                     className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
@@ -112,7 +144,7 @@ const LoginPage = () => {
               </div>
 
               <Button
-                onClick={() => navigate("/dashboard")}
+                onClick={handleLogin}
                 className="mt-2 h-14 rounded-full bg-[#111111] hover:bg-[#111111]"
               >
                 <div className="flex items-center gap-2 text-[15px] font-medium">

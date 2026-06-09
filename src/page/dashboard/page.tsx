@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import {
+  ArrowDownLeft,
   ArrowUpRight,
   Home,
   LogOut,
@@ -17,6 +18,7 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 
 import RecentActivity from "../../components/dashboard/RecentActivity";
+import { useHostelStore } from "../../store/useHostelStore";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -27,12 +29,31 @@ const DashboardPage = () => {
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
+  const student = useHostelStore((state) => state.student);
+  const isLoggedIn = useHostelStore((state) => state.isLoggedIn);
+  const activities = useHostelStore((state) => state.activities);
+  const logoutStudent = useHostelStore((state) => state.logoutStudent);
+
+  const lastActivity = activities[0];
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
+
+  const handleLogout = () => {
+    logoutStudent();
+    setShowSettingsModal(false);
+    navigate("/");
+  };
 
   return (
     <>
@@ -78,21 +99,39 @@ const DashboardPage = () => {
                 <div className="mt-3 flex items-center justify-between gap-3">
                   <div>
                     <p className="text-[15px] font-semibold text-white">
-                      Room A-204 Collected
+                      {lastActivity
+                        ? `Room ${lastActivity.roomNumber} ${
+                            lastActivity.type === "Dropped Key"
+                              ? "Dropped"
+                              : "Collected"
+                          }`
+                        : "No key activity yet"}
                     </p>
 
-                    <p className="mt-1 text-xs text-gray-300">2 mins ago</p>
+                    <p className="mt-1 text-xs text-gray-300">
+                      {lastActivity
+                        ? `${lastActivity.hostel} • ${lastActivity.flat} • ${lastActivity.time}`
+                        : "Scan a QR code to start"}
+                    </p>
                   </div>
 
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black">
-                    <ArrowUpRight size={18} />
+                    {lastActivity?.type === "Dropped Key" ? (
+                      <ArrowDownLeft size={18} />
+                    ) : (
+                      <ArrowUpRight size={18} />
+                    )}
                   </div>
                 </div>
               </div>
             </div>
 
             {/* CURVED BOTTOM */}
-            <div className="absolute bottom-0 left-0 h-10 w-full rounded-t-[36px] bg-[#F3F3F3]" />
+            <div
+              className={`absolute bottom-0 left-0 h-10 w-full rounded-t-[36px] ${
+                darkMode ? "bg-[#111111]" : "bg-[#F3F3F3]"
+              }`}
+            />
           </div>
 
           {/* WHITE SECTION */}
@@ -162,28 +201,31 @@ const DashboardPage = () => {
                 {/* PROFILE */}
                 <div className="flex flex-col items-center text-center">
                   <div className="relative">
-                    <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-white/10">
-                      <img
-                        src="https://i.pravatar.cc/300"
-                        alt="profile"
-                        className="h-full w-full object-cover"
-                      />
+                    <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-white/10 bg-white/10">
+                      <User size={34} className="text-white" />
                     </div>
 
                     <div className="absolute bottom-1 right-1 h-4 w-4 rounded-full border-2 border-[#111111] bg-green-500" />
                   </div>
 
                   <h2 className="mt-4 text-[20px] font-bold text-white">
-                    Samuel Asije
+                    {student?.fullName || "Student"}
                   </h2>
 
                   <p className="mt-1 text-[11px] text-gray-400">
-                    BIU/23/CSC/001
+                    {student?.matricNumber || "No matric number"}
                   </p>
 
                   <div className="mt-4 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-medium text-white">
                     Verified Resident
                   </div>
+
+                  {student && (
+                    <p className="mt-3 max-w-[240px] text-center text-[11px] leading-5 text-gray-400">
+                      {student.hostel} • {student.flat} • Room{" "}
+                      {student.roomNumber}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -274,7 +316,9 @@ const DashboardPage = () => {
                         darkMode ? "text-gray-400" : "text-gray-500"
                       }`}
                     >
-                      View hostel details
+                      {student
+                        ? `${student.hostel}, ${student.flat}, Room ${student.roomNumber}`
+                        : "View hostel details"}
                     </p>
                   </div>
                 </div>
@@ -282,7 +326,7 @@ const DashboardPage = () => {
 
               {/* LOGOUT */}
               <button
-                onClick={() => navigate("/")}
+                onClick={handleLogout}
                 className="flex w-full items-center justify-between rounded-[24px] bg-red-500 p-4"
               >
                 <div className="flex items-center gap-3">
@@ -294,7 +338,7 @@ const DashboardPage = () => {
                     <p className="text-sm font-semibold text-white">Logout</p>
 
                     <p className="mt-1 text-[11px] text-red-100">
-                      End current session
+                      Account data will remain saved
                     </p>
                   </div>
                 </div>

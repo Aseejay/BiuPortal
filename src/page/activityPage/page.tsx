@@ -12,57 +12,26 @@ import {
 
 import { useLocation, useNavigate } from "react-router-dom";
 
-const activities = [
-  {
-    type: "Dropped Key",
-    room: "Room A-204",
-    time: "Today, 8:45 AM",
-    status: "AT PORTER",
-    icon: ArrowDownLeft,
-    iconBg: "bg-[#DCFCE7]",
-    iconColor: "text-[#16A34A]",
-    statusBg: "bg-[#DCFCE7]",
-    statusColor: "text-[#16A34A]",
-  },
-  {
-    type: "Collected Key",
-    room: "Room B-105",
-    time: "Yesterday, 7:10 PM",
-    status: "COLLECTED",
-    icon: ArrowUpRight,
-    iconBg: "bg-[#DBEAFE]",
-    iconColor: "text-[#2563EB]",
-    statusBg: "bg-[#DBEAFE]",
-    statusColor: "text-[#2563EB]",
-  },
-  {
-    type: "Dropped Key",
-    room: "Room C-302",
-    time: "Monday, 9:30 AM",
-    status: "AT PORTER",
-    icon: ArrowDownLeft,
-    iconBg: "bg-[#DCFCE7]",
-    iconColor: "text-[#16A34A]",
-    statusBg: "bg-[#DCFCE7]",
-    statusColor: "text-[#16A34A]",
-  },
-  {
-    type: "Collected Key",
-    room: "Room D-112",
-    time: "Sunday, 6:15 PM",
-    status: "COLLECTED",
-    icon: ArrowUpRight,
-    iconBg: "bg-[#DBEAFE]",
-    iconColor: "text-[#2563EB]",
-    statusBg: "bg-[#DBEAFE]",
-    statusColor: "text-[#2563EB]",
-  },
-];
+import { useHostelStore } from "../../store/useHostelStore";
 
 const ActivityPage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
+
+  const activities = useHostelStore((state) => state.activities);
+  const student = useHostelStore((state) => state.student);
+  const isLoggedIn = useHostelStore((state) => state.isLoggedIn);
+
+  const latestActivity = activities[0];
+
+  const droppedCount = activities.filter(
+    (activity) => activity.type === "Dropped Key",
+  ).length;
+
+  const collectedCount = activities.filter(
+    (activity) => activity.type === "Collected Key",
+  ).length;
 
   useEffect(() => {
     window.scrollTo({
@@ -70,6 +39,12 @@ const ActivityPage = () => {
       behavior: "smooth",
     });
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <div className="min-h-screen bg-[#F3F3F3] px-5 py-6">
@@ -117,16 +92,54 @@ const ActivityPage = () => {
           {/* QUICK STATS */}
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-[24px] bg-white/10 p-4 backdrop-blur-xl">
-              <p className="text-[11px] text-gray-300">Today Activity</p>
+              <p className="text-[11px] text-gray-300">Total Activity</p>
 
-              <h2 className="mt-2 text-[22px] font-bold text-white">12</h2>
+              <h2 className="mt-2 text-[22px] font-bold text-white">
+                {activities.length}
+              </h2>
             </div>
 
             <div className="rounded-[24px] bg-white/10 p-4 backdrop-blur-xl">
               <p className="text-[11px] text-gray-300">Current Status</p>
 
-              <h2 className="mt-2 text-sm font-semibold text-white">Active</h2>
+              <h2 className="mt-2 text-sm font-semibold text-white">
+                {latestActivity ? latestActivity.status : "No Activity"}
+              </h2>
             </div>
+          </div>
+
+          {/* STUDENT INFO */}
+          {student && (
+            <div className="mt-3 rounded-[24px] bg-white/10 p-4 backdrop-blur-xl">
+              <p className="text-[11px] text-gray-300">Resident</p>
+
+              <h2 className="mt-2 text-sm font-semibold text-white">
+                {student.fullName}
+              </h2>
+
+              <p className="mt-1 text-[11px] leading-5 text-gray-300">
+                {student.hostel} • {student.flat} • Room {student.roomNumber}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* EXTRA STATS */}
+        <div className="mb-6 grid grid-cols-2 gap-3">
+          <div className="rounded-[24px] bg-white p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+            <p className="text-[11px] text-gray-500">Dropped</p>
+
+            <h2 className="mt-2 text-[22px] font-bold text-[#16A34A]">
+              {droppedCount}
+            </h2>
+          </div>
+
+          <div className="rounded-[24px] bg-white p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+            <p className="text-[11px] text-gray-500">Collected</p>
+
+            <h2 className="mt-2 text-[22px] font-bold text-[#2563EB]">
+              {collectedCount}
+            </h2>
           </div>
         </div>
 
@@ -141,14 +154,47 @@ const ActivityPage = () => {
           </p>
         </div>
 
+        {/* EMPTY STATE */}
+        {activities.length === 0 && (
+          <div className="rounded-[30px] bg-white p-6 text-center shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F3F3F3]">
+              <QrCode size={24} className="text-[#111111]" />
+            </div>
+
+            <h3 className="mt-4 text-[16px] font-semibold text-[#111111]">
+              No activity yet
+            </h3>
+
+            <p className="mt-2 text-[13px] leading-6 text-gray-500">
+              Scan a drop or collect QR code to start recording hostel key
+              activity.
+            </p>
+
+            <button
+              onClick={() => navigate("/scan")}
+              className="mt-5 rounded-full bg-[#111111] px-5 py-3 text-xs font-semibold text-white"
+            >
+              Scan QR Code
+            </button>
+          </div>
+        )}
+
         {/* ACTIVITIES */}
         <div className="space-y-4">
-          {activities.map((activity, index) => {
-            const Icon = activity.icon;
+          {activities.map((activity) => {
+            const isDrop = activity.type === "Dropped Key";
+
+            const Icon = isDrop ? ArrowDownLeft : ArrowUpRight;
+
+            const iconBg = isDrop ? "bg-[#DCFCE7]" : "bg-[#DBEAFE]";
+            const iconColor = isDrop ? "text-[#16A34A]" : "text-[#2563EB]";
+
+            const statusBg = isDrop ? "bg-[#DCFCE7]" : "bg-[#DBEAFE]";
+            const statusColor = isDrop ? "text-[#16A34A]" : "text-[#2563EB]";
 
             return (
               <div
-                key={index}
+                key={activity.id}
                 className="rounded-[30px] bg-white p-4 shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -156,9 +202,9 @@ const ActivityPage = () => {
                   <div className="flex gap-3">
                     {/* ICON */}
                     <div
-                      className={`flex h-14 w-14 items-center justify-center rounded-2xl ${activity.iconBg}`}
+                      className={`flex h-14 w-14 items-center justify-center rounded-2xl ${iconBg}`}
                     >
-                      <Icon size={22} className={activity.iconColor} />
+                      <Icon size={22} className={iconColor} />
                     </div>
 
                     {/* CONTENT */}
@@ -168,7 +214,8 @@ const ActivityPage = () => {
                       </h3>
 
                       <p className="mt-1 text-xs font-medium text-gray-400">
-                        {activity.room}
+                        {activity.hostel} • {activity.flat} • Room{" "}
+                        {activity.roomNumber}
                       </p>
 
                       <div className="mt-3 flex items-center gap-1.5">
@@ -182,11 +229,9 @@ const ActivityPage = () => {
                   </div>
 
                   {/* STATUS */}
-                  <div
-                    className={`rounded-full px-3 py-1 ${activity.statusBg}`}
-                  >
+                  <div className={`rounded-full px-3 py-1 ${statusBg}`}>
                     <span
-                      className={`text-[10px] font-semibold tracking-wide ${activity.statusColor}`}
+                      className={`text-[10px] font-semibold tracking-wide ${statusColor}`}
                     >
                       {activity.status}
                     </span>

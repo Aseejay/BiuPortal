@@ -8,6 +8,7 @@ import {
   BedDouble,
   Building2,
   ChevronDown,
+  Home,
   LockKeyhole,
   User2,
 } from "lucide-react";
@@ -16,6 +17,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
+import { useHostelStore } from "../../../store/useHostelStore";
 
 const hostels = [
   "Hope Hostel",
@@ -28,6 +30,16 @@ const hostels = [
 const CreateAccountPage = () => {
   const [step, setStep] = useState(1);
 
+  const [matricNumber, setMatricNumber] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [hostel, setHostel] = useState("");
+  const [flat, setFlat] = useState("");
+  const [roomNumber, setRoomNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const registerStudent = useHostelStore((state) => state.registerStudent);
+
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -39,8 +51,46 @@ const CreateAccountPage = () => {
     });
   }, [location.pathname, step]);
 
-  const student = {
-    fullName: "Samuel Asije",
+  const handleContinue = () => {
+    if (!matricNumber.trim()) {
+      alert("Please enter your matric number");
+      return;
+    }
+
+    setStep(2);
+  };
+
+  const handleCreateAccount = () => {
+    if (
+      !matricNumber.trim() ||
+      !fullName.trim() ||
+      !hostel.trim() ||
+      !flat.trim() ||
+      !roomNumber.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    registerStudent({
+      matricNumber,
+      fullName,
+      hostel,
+      flat,
+      roomNumber,
+      password,
+    });
+
+    alert("Account created successfully");
+
+    navigate("/dashboard");
   };
 
   return (
@@ -49,7 +99,10 @@ const CreateAccountPage = () => {
         <div>
           {step === 1 && (
             <>
-              <button className="mb-10 flex h-12 w-12 items-center justify-center rounded-full bg-white">
+              <button
+                onClick={() => navigate("/")}
+                className="mb-10 flex h-12 w-12 items-center justify-center rounded-full bg-white"
+              >
                 <ArrowLeft size={20} className="text-gray-700" />
               </button>
 
@@ -77,6 +130,8 @@ const CreateAccountPage = () => {
                       />
 
                       <Input
+                        value={matricNumber}
+                        onChange={(e) => setMatricNumber(e.target.value)}
                         placeholder="Enter matric number"
                         className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
                       />
@@ -84,7 +139,7 @@ const CreateAccountPage = () => {
                   </div>
 
                   <Button
-                    onClick={() => setStep(2)}
+                    onClick={handleContinue}
                     className="h-14 rounded-full bg-[#111111] hover:bg-[#111111]"
                   >
                     <div className="flex items-center gap-2 text-[15px] font-medium">
@@ -130,8 +185,9 @@ const CreateAccountPage = () => {
                       />
 
                       <Input
-                        value={student.fullName}
-                        readOnly
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Enter full name"
                         className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
                       />
                     </div>
@@ -153,8 +209,12 @@ const CreateAccountPage = () => {
                         className="absolute right-4 top-1/2 z-10 -translate-y-1/2 text-gray-400"
                       />
 
-                      <select className="h-14 w-full appearance-none rounded-[22px] border-0 bg-[#F5F5F5] px-12 text-[15px] text-gray-700 outline-none">
-                        <option>Select hostel</option>
+                      <select
+                        value={hostel}
+                        onChange={(e) => setHostel(e.target.value)}
+                        className="h-14 w-full appearance-none rounded-[22px] border-0 bg-[#F5F5F5] px-12 text-[15px] text-gray-700 outline-none"
+                      >
+                        <option value="">Select hostel</option>
 
                         {hostels.map((hostel) => (
                           <option key={hostel} value={hostel}>
@@ -162,6 +222,26 @@ const CreateAccountPage = () => {
                           </option>
                         ))}
                       </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="mb-3 text-sm font-medium text-gray-700">
+                      Flat
+                    </p>
+
+                    <div className="relative">
+                      <Home
+                        size={18}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                      />
+
+                      <Input
+                        value={flat}
+                        onChange={(e) => setFlat(e.target.value)}
+                        placeholder="Enter flat e.g. Flat A"
+                        className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
+                      />
                     </div>
                   </div>
 
@@ -177,6 +257,8 @@ const CreateAccountPage = () => {
                       />
 
                       <Input
+                        value={roomNumber}
+                        onChange={(e) => setRoomNumber(e.target.value)}
                         placeholder="Enter room number"
                         className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
                       />
@@ -195,6 +277,8 @@ const CreateAccountPage = () => {
                       />
 
                       <Input
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         type="password"
                         placeholder="Enter password"
                         className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
@@ -214,6 +298,8 @@ const CreateAccountPage = () => {
                       />
 
                       <Input
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         type="password"
                         placeholder="Confirm password"
                         className="h-14 rounded-[22px] border-0 bg-[#F5F5F5] pl-12 text-[15px]"
@@ -222,7 +308,7 @@ const CreateAccountPage = () => {
                   </div>
 
                   <Button
-                    onClick={() => navigate("/verify-otp")}
+                    onClick={handleCreateAccount}
                     className="h-14 rounded-full bg-[#111111] hover:bg-[#111111]"
                   >
                     <div className="flex items-center gap-2 text-[15px] font-medium">
