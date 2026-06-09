@@ -79,16 +79,21 @@ const CreateAccountPage = () => {
       return;
     }
 
-    registerStudent({
-      matricNumber,
-      fullName,
-      hostel,
-      flat,
-      roomNumber,
+    const result = registerStudent({
+      matricNumber: matricNumber.trim(),
+      fullName: fullName.trim(),
+      hostel: hostel.trim(),
+      flat: flat.trim(),
+      roomNumber: roomNumber.trim(),
       password,
     });
 
-    alert("Account created successfully");
+    if (!result.success) {
+      alert(result.message);
+      return;
+    }
+
+    alert(result.message);
 
     navigate("/dashboard");
   };

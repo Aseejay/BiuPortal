@@ -19,11 +19,17 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
 
   const loginStudent = useHostelStore((state) => state.loginStudent);
-  const student = useHostelStore((state) => state.student);
+  const isLoggedIn = useHostelStore((state) => state.isLoggedIn);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleLogin = () => {
     if (!matricNumber.trim() || !password.trim()) {
@@ -31,15 +37,10 @@ const LoginPage = () => {
       return;
     }
 
-    if (!student) {
-      alert("No account found. Please create an account first.");
-      return;
-    }
+    const result = loginStudent(matricNumber.trim(), password);
 
-    const success = loginStudent(matricNumber, password);
-
-    if (!success) {
-      alert("Invalid matric number or password");
+    if (!result.success) {
+      alert(result.message);
       return;
     }
 
@@ -138,7 +139,10 @@ const LoginPage = () => {
                   Remember me
                 </label>
 
-                <button className="text-sm font-medium text-gray-700">
+                <button
+                  type="button"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Forgot password?
                 </button>
               </div>

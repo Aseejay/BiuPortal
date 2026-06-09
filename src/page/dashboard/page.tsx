@@ -31,10 +31,14 @@ const DashboardPage = () => {
 
   const student = useHostelStore((state) => state.student);
   const isLoggedIn = useHostelStore((state) => state.isLoggedIn);
-  const activities = useHostelStore((state) => state.activities);
   const logoutStudent = useHostelStore((state) => state.logoutStudent);
+  const getSameRoomActivities = useHostelStore(
+    (state) => state.getSameRoomActivities,
+  );
 
-  const lastActivity = activities[0];
+  const sameRoomActivities = getSameRoomActivities();
+
+  const lastActivity = sameRoomActivities[0];
 
   useEffect(() => {
     window.scrollTo({
@@ -100,15 +104,15 @@ const DashboardPage = () => {
                   <div>
                     <p className="text-[15px] font-semibold text-white">
                       {lastActivity
-                        ? `Room ${lastActivity.roomNumber} ${
+                        ? `${lastActivity.fullName} ${
                             lastActivity.type === "Dropped Key"
-                              ? "Dropped"
-                              : "Collected"
-                          }`
+                              ? "dropped"
+                              : "collected"
+                          } Room ${lastActivity.roomNumber} key`
                         : "No key activity yet"}
                     </p>
 
-                    <p className="mt-1 text-xs text-gray-300">
+                    <p className="mt-1 text-xs leading-5 text-gray-300">
                       {lastActivity
                         ? `${lastActivity.hostel} • ${lastActivity.flat} • ${lastActivity.time}`
                         : "Scan a QR code to start"}
@@ -323,6 +327,31 @@ const DashboardPage = () => {
                   </div>
                 </div>
               </button>
+
+              {/* ROOM MEMBERS ACTIVITY */}
+              <div
+                className={`rounded-[24px] p-4 ${
+                  darkMode ? "bg-[#232323]" : "bg-[#F7F7F7]"
+                }`}
+              >
+                <p
+                  className={`text-sm font-semibold ${
+                    darkMode ? "text-white" : "text-[#111111]"
+                  }`}
+                >
+                  Room Activity
+                </p>
+
+                <p
+                  className={`mt-1 text-[11px] leading-5 ${
+                    darkMode ? "text-gray-400" : "text-gray-500"
+                  }`}
+                >
+                  {sameRoomActivities.length} activity record
+                  {sameRoomActivities.length === 1 ? "" : "s"} from this same
+                  hostel, flat, and room
+                </p>
+              </div>
 
               {/* LOGOUT */}
               <button

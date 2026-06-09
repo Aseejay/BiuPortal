@@ -1,3 +1,5 @@
+// src/store/useHostelStore.ts
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -14,6 +16,8 @@ export interface StudentData {
 
 export interface Activity {
   id: string;
+  matricNumber: string;
+  fullName: string;
   type: ActivityType;
   hostel: string;
   flat: string;
@@ -22,16 +26,28 @@ export interface Activity {
   status: "AT PORTER" | "COLLECTED";
 }
 
+interface ActionResult {
+  success: boolean;
+  message: string;
+}
+
 interface HostelStore {
+  students: StudentData[];
   student: StudentData | null;
+  currentStudentMatric: string | null;
   isLoggedIn: boolean;
   activities: Activity[];
 
-  registerStudent: (student: StudentData) => void;
-  loginStudent: (matricNumber: string, password: string) => boolean;
+  registerStudent: (student: StudentData) => ActionResult;
+  loginStudent: (matricNumber: string, password: string) => ActionResult;
   logoutStudent: () => void;
-  addActivity: (type: ActivityType) => void;
+  addActivity: (type: ActivityType) => ActionResult;
+  getCurrentStudentActivities: () => Activity[];
+  getSameRoomActivities: () => Activity[];
+  clearDemoData: () => void;
 }
+
+const normalize = (value: string) => value.trim().toLowerCase();
 
 const formatTime = () => {
   return new Date().toLocaleString("en-NG", {
@@ -46,63 +62,199 @@ const formatTime = () => {
 export const useHostelStore = create<HostelStore>()(
   persist(
     (set, get) => ({
+      students: [],
       student: null,
+      currentStudentMatric: null,
       isLoggedIn: false,
       activities: [],
 
-      registerStudent: (student) => {
+      registerStudent: (newStudent) => {
+        const cleanStudent: StudentData = {
+          matricNumber: newStudent.matricNumber.trim(),
+          fullName: newStudent.fullName.trim(),
+          hostel: newStudent.hostel.trim(),
+          flat: newStudent.flat.trim(),
+          roomNumber: newStudent.roomNumber.trim(),
+          password: newStudent.password,
+        };
+
+        const students = get().students || [];
+
+        const matricAlreadyExists = students.some(
+          (student) =>
+            normalize(student.matricNumber) ===
+            normalize(cleanStudent.matricNumber),
+        );
+
+        if (matricAlreadyExists) {
+          return {
+            success: false,
+            message: "This matric number has already been registered",
+          };
+        }
+
         set({
-          student,
+          students: [...students, cleanStudent],
+          student: cleanStudent,
+          currentStudentMatric: cleanStudent.matricNumber,
           isLoggedIn: true,
-          activities: [],
         });
+
+        return {
+          success: true,
+          message: "Account created successfully",
+        };
       },
 
       loginStudent: (matricNumber, password) => {
-        const student = get().student;
+        const students = get().students || [];
 
-        if (
-          student &&
-          student.matricNumber === matricNumber &&
-          student.password === password
-        ) {
-          set({ isLoggedIn: true });
-          return true;
+        const foundStudent = students.find(
+          (student) =>
+            normalize(student.matricNumber) === normalize(matricNumber) &&
+            student.password === password,
+        );
+
+        if (!foundStudent) {
+          return {
+            success: false,
+            message: "Invalid matric number or password",
+          };
         }
 
-        return false;
+        set({
+          student: foundStudent,
+          currentStudentMatric: foundStudent.matricNumber,
+          isLoggedIn: true,
+        });
+
+        return {
+          success: true,
+          message: "Login successful",
+        };
       },
 
       logoutStudent: () => {
         set({
           student: null,
+          currentStudentMatric: null,
           isLoggedIn: false,
-          activities: [],
         });
       },
 
       addActivity: (type) => {
-        const student = get().student;
+        const currentStudent = get().student;
 
-        if (!student) return;
+        if (!currentStudent) {
+          return {
+            success: false,
+            message: "Please login first",
+          };
+        }
 
         const newActivity: Activity = {
           id: crypto.randomUUID(),
+          matricNumber: currentStudent.matricNumber,
+          fullName: currentStudent.fullName,
           type,
-          hostel: student.hostel,
-          flat: student.flat,
-          roomNumber: student.roomNumber,
+          hostel: currentStudent.hostel,
+          flat: currentStudent.flat,
+          roomNumber: currentStudent.roomNumber,
           time: formatTime(),
           status: type === "Dropped Key" ? "AT PORTER" : "COLLECTED",
         };
 
         set({
-          activities: [newActivity, ...get().activities],
+          activities: [newActivity, ...(get().activities || [])],
+        });
+
+        return {
+          success: true,
+          message:
+            type === "Dropped Key"
+              ? "Key dropped successfully"
+              : "Key collected successfully",
+        };
+      },
+
+      getCurrentStudentActivities: () => {
+        const currentStudent = get().student;
+
+        if (!currentStudent) {
+          return [];
+        }
+
+        return (get().activities || []).filter(
+          (activity) =>
+            normalize(activity.matricNumber) ===
+            normalize(currentStudent.matricNumber),
+        );
+      },
+
+      getSameRoomActivities: () => {
+        const currentStudent = get().student;
+
+        if (!currentStudent) {
+          return [];
+        }
+
+        return (get().activities || []).filter(
+          (activity) =>
+            normalize(activity.hostel) === normalize(currentStudent.hostel) &&
+            normalize(activity.flat) === normalize(currentStudent.flat) &&
+            normalize(activity.roomNumber) ===
+              normalize(currentStudent.roomNumber),
+        );
+      },
+
+      clearDemoData: () => {
+        set({
+          students: [],
+          student: null,
+          currentStudentMatric: null,
+          isLoggedIn: false,
+          activities: [],
         });
       },
     }),
     {
       name: "biu-hostel-demo-storage",
+
+      merge: (persistedState, currentState) => {
+        const saved = persistedState as Partial<HostelStore> | undefined;
+
+        if (!saved) {
+          return currentState;
+        }
+
+        const oldSingleStudent = saved.student;
+
+        const savedStudents = Array.isArray(saved.students)
+          ? saved.students
+          : [];
+
+        const mergedStudents =
+          oldSingleStudent &&
+          !savedStudents.some(
+            (student) =>
+              normalize(student.matricNumber) ===
+              normalize(oldSingleStudent.matricNumber),
+          )
+            ? [...savedStudents, oldSingleStudent]
+            : savedStudents;
+
+        return {
+          ...currentState,
+          ...saved,
+          students: mergedStudents,
+          student: saved.isLoggedIn ? saved.student || null : null,
+          currentStudentMatric: saved.isLoggedIn
+            ? saved.currentStudentMatric || saved.student?.matricNumber || null
+            : null,
+          isLoggedIn: saved.isLoggedIn || false,
+          activities: Array.isArray(saved.activities) ? saved.activities : [],
+        };
+      },
     },
   ),
 );
