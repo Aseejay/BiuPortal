@@ -48,6 +48,7 @@ interface HostelStore {
   getCurrentStudentActivities: () => Activity[];
   getSameRoomActivities: () => Activity[];
   getNextKeyAction: () => ActivityType;
+
   clearDemoData: () => void;
 }
 
@@ -146,41 +147,6 @@ export const useHostelStore = create<HostelStore>()(
         });
       },
 
-      addActivity: (type) => {
-        const currentStudent = get().student;
-
-        if (!currentStudent) {
-          return {
-            success: false,
-            message: "Please login first",
-          };
-        }
-
-        const newActivity: Activity = {
-          id: crypto.randomUUID(),
-          matricNumber: currentStudent.matricNumber,
-          fullName: currentStudent.fullName,
-          type,
-          hostel: currentStudent.hostel,
-          flat: currentStudent.flat,
-          roomNumber: currentStudent.roomNumber,
-          time: formatTime(),
-          status: type === "Dropped Key" ? "AT PORTER" : "COLLECTED",
-        };
-
-        set({
-          activities: [newActivity, ...(get().activities || [])],
-        });
-
-        return {
-          success: true,
-          message:
-            type === "Dropped Key"
-              ? "Key dropped successfully"
-              : "Key collected successfully",
-        };
-      },
-
       getCurrentStudentActivities: () => {
         const currentStudent = get().student;
 
@@ -218,23 +184,60 @@ export const useHostelStore = create<HostelStore>()(
           return "Dropped Key";
         }
 
-        const currentStudentActivities = (get().activities || []).filter(
+        const sameRoomActivities = (get().activities || []).filter(
           (activity) =>
-            normalize(activity.matricNumber) ===
-            normalize(currentStudent.matricNumber),
+            normalize(activity.hostel) === normalize(currentStudent.hostel) &&
+            normalize(activity.flat) === normalize(currentStudent.flat) &&
+            normalize(activity.roomNumber) ===
+              normalize(currentStudent.roomNumber),
         );
 
-        const lastActivity = currentStudentActivities[0];
+        const lastRoomActivity = sameRoomActivities[0];
 
-        if (!lastActivity) {
+        if (!lastRoomActivity) {
           return "Dropped Key";
         }
 
-        if (lastActivity.type === "Dropped Key") {
+        if (lastRoomActivity.type === "Dropped Key") {
           return "Collected Key";
         }
 
         return "Dropped Key";
+      },
+
+      addActivity: (type) => {
+        const currentStudent = get().student;
+
+        if (!currentStudent) {
+          return {
+            success: false,
+            message: "Please login first",
+          };
+        }
+
+        const newActivity: Activity = {
+          id: crypto.randomUUID(),
+          matricNumber: currentStudent.matricNumber,
+          fullName: currentStudent.fullName,
+          type,
+          hostel: currentStudent.hostel,
+          flat: currentStudent.flat,
+          roomNumber: currentStudent.roomNumber,
+          time: formatTime(),
+          status: type === "Dropped Key" ? "AT PORTER" : "COLLECTED",
+        };
+
+        set({
+          activities: [newActivity, ...(get().activities || [])],
+        });
+
+        return {
+          success: true,
+          message:
+            type === "Dropped Key"
+              ? "Key dropped successfully"
+              : "Key collected successfully",
+        };
       },
 
       scanKeyQrCode: () => {
