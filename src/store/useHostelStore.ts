@@ -41,9 +41,13 @@ interface HostelStore {
   registerStudent: (student: StudentData) => ActionResult;
   loginStudent: (matricNumber: string, password: string) => ActionResult;
   logoutStudent: () => void;
+
   addActivity: (type: ActivityType) => ActionResult;
+  scanKeyQrCode: () => ActionResult;
+
   getCurrentStudentActivities: () => Activity[];
   getSameRoomActivities: () => Activity[];
+  getNextKeyAction: () => ActivityType;
   clearDemoData: () => void;
 }
 
@@ -207,6 +211,38 @@ export const useHostelStore = create<HostelStore>()(
         );
       },
 
+      getNextKeyAction: () => {
+        const currentStudent = get().student;
+
+        if (!currentStudent) {
+          return "Dropped Key";
+        }
+
+        const currentStudentActivities = (get().activities || []).filter(
+          (activity) =>
+            normalize(activity.matricNumber) ===
+            normalize(currentStudent.matricNumber),
+        );
+
+        const lastActivity = currentStudentActivities[0];
+
+        if (!lastActivity) {
+          return "Dropped Key";
+        }
+
+        if (lastActivity.type === "Dropped Key") {
+          return "Collected Key";
+        }
+
+        return "Dropped Key";
+      },
+
+      scanKeyQrCode: () => {
+        const nextAction = get().getNextKeyAction();
+
+        return get().addActivity(nextAction);
+      },
+
       clearDemoData: () => {
         set({
           students: [],
@@ -219,42 +255,6 @@ export const useHostelStore = create<HostelStore>()(
     }),
     {
       name: "biu-hostel-demo-storage",
-
-      merge: (persistedState, currentState) => {
-        const saved = persistedState as Partial<HostelStore> | undefined;
-
-        if (!saved) {
-          return currentState;
-        }
-
-        const oldSingleStudent = saved.student;
-
-        const savedStudents = Array.isArray(saved.students)
-          ? saved.students
-          : [];
-
-        const mergedStudents =
-          oldSingleStudent &&
-          !savedStudents.some(
-            (student) =>
-              normalize(student.matricNumber) ===
-              normalize(oldSingleStudent.matricNumber),
-          )
-            ? [...savedStudents, oldSingleStudent]
-            : savedStudents;
-
-        return {
-          ...currentState,
-          ...saved,
-          students: mergedStudents,
-          student: saved.isLoggedIn ? saved.student || null : null,
-          currentStudentMatric: saved.isLoggedIn
-            ? saved.currentStudentMatric || saved.student?.matricNumber || null
-            : null,
-          isLoggedIn: saved.isLoggedIn || false,
-          activities: Array.isArray(saved.activities) ? saved.activities : [],
-        };
-      },
     },
   ),
 );
